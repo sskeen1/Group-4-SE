@@ -7,5 +7,11 @@ Home Page for Intro to Software Engineering (CSE-4214)
 - Alexander Kellough (alekel133): Frontend
 - Keifer Hardy (Keifer-H): Backend
 - Joseph Sorell (reesesorrell): Frontend
-
+  
 # Project Description:
+
+
+# Languages and Techniques Used:
+-Python
+-SQL
+-Javascript
