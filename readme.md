@@ -2,10 +2,10 @@
 Home Page for Intro to Software Engineering (CSE-4214)
 -Mississippi State University, Spring 2024
 # Members: 
-- Steven Skeen (sskeen1): Team Lead
-- Brennen Sheckart (`uname`): `Role`
-- Alexander Kellough (alekel133): `Role`
-- Keifer Hardy (`uname`): `Role`
-- Joseph Sorell (`uname`): `Role`
+- Steven Skeen (sskeen1): Team Lead / Backend
+- Brennen Sheckart (`uname`): Backend
+- Alexander Kellough (alekel133): Frontend
+- Keifer Hardy (`uname`): Backend
+- Joseph Sorell (`uname`): Frontend
 
 # Project Description:
