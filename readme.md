@@ -11,6 +11,11 @@ Home Page for Intro to Software Engineering (CSE-4214)
 # Project Description:
 Scamazon is a web application that facilities the person-to-person sale of books. It allows sellers to create and manage listings of books to sell. Potential buyers are able to search and view existing listings. A buyer can add books they wish to purchase to their cart and checkout in order to finalize a sale. Admin users can view and manage existing listings and approve/disapprove newly created user accounts.
 
+# Project Objectives:
+- Program, in Javascript, a web application that handles user verification and requests to interact with the project's database.
+- Program a python API to manage the project database
+- Allow interaction between the front end GUI on the website and the python API to manage the database
+
 # Languages and Techniques Used:
 -Python
 -SQL
