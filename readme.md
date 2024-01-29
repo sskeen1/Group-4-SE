@@ -9,7 +9,7 @@ Home Page for Intro to Software Engineering (CSE-4214)
 - Joseph Sorell (reesesorrell): Frontend
   
 # Project Description:
-
+Scamazon is a web application that facilities the person-to-person sale of books. It allows sellers to create and manage listings of books to sell. Potential buyers are able to search and view existing listings. A buyer can add books they wish to purchase to their cart and checkout in order to finalize a sale. Admin users can view and manage existing listings and approve/disapprove newly created user accounts.
 
 # Languages and Techniques Used:
 -Python
