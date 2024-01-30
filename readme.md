@@ -16,6 +16,12 @@ Scamazon is a web application that facilities the person-to-person sale of books
 - Program a python API to manage the project database
 - Allow interaction between the front end GUI on the website and the python API to manage the database
 
+# Project Features:
+- Users can create accounts, log in, and log out.
+- Buyers can browse available books, buy books, return books, and search for specific books
+- Sellers can create a listing for a book, receive (mock) payments, and remove a listing they created
+- Admins can audit account creation and remove existing book listings.
+
 # Languages and Techniques Used:
 -Python
 -SQL
