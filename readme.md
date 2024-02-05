@@ -2,11 +2,11 @@
 Home Page for Intro to Software Engineering (CSE-4214)
 -Mississippi State University, Spring 2024
 # Members: 
-- Steven Skeen ([sskeen1](https://github.com/sskeen1): Team Lead / Backend
-- Brennen Sheckart (btsheck): Backend
-- Alexander Kellough (alekel133): Frontend
-- Keifer Hardy (Keifer-H): Backend
-- Joseph Sorell (reesesorrell): Frontend
+- Steven Skeen ([sskeen1](https://github.com/sskeen1)): Team Lead / Backend
+- Brennen Sheckart ([btsheck](https://github.com/btsheck)): Backend
+- Alexander Kellough ([alekel133](https://github.com/alekel133)): Frontend
+- Keifer Hardy ([Keifer-H](https://github.com/Kiefer-H)): Backend
+- Joseph Sorell ([reesesorrell](https://github.com/reesesorrell)): Frontend
   
 # Project Description:
 Scamazon is a web application that facilities the person-to-person sale of books. It allows sellers to create and manage listings of books to sell. Potential buyers are able to search and view existing listings. A buyer can add books they wish to purchase to their cart and checkout in order to finalize a sale. Admin users can view and manage existing listings and approve/disapprove newly created user accounts.
