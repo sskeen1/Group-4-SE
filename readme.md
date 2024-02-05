@@ -1,3 +1,4 @@
+![Screenshot from 2024-02-05 16-12-42](https://github.com/sskeen1/Group-4-SE/assets/80880723/e3383d68-3975-4868-9031-16c92f7aba89)
 # Intro to Software Engineering Group 4
 Home Page for Intro to Software Engineering (CSE-4214)
 -Mississippi State University, Spring 2024
