@@ -26,4 +26,4 @@ Scamazon is a web application that facilities the person-to-person sale of books
 # Languages and Techniques Used:
 *Frontend built with HTML5/CSS3 and potentially Javascript if necessary
 *Backend communications and routing built with Django 5.0 using Python 3.12
-*Database built with MySQL 8.0
+*Database built with SQLite version 3.45.1.
