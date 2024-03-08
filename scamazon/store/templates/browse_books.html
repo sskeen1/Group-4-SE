@@ -5,10 +5,7 @@
 <p> Results: </p>
 <ul>
 {% for instance in book_list %}
-  <li>{{ instance.title }} by {{instance.author}}</li>
-  <ul>
-    <li>Price: {{instance.price}}, ISBN: {{instance.isbn}}, Pages: {{instance.pages}}, Rating: {{instance.rating}} / 5.0 </li>
-  </ul>
+  <li>{{ instance.title }} by {{instance.author}}: ${{instance.price}}</li>
 {% endfor %}
 </ul>
 {% endblock %}

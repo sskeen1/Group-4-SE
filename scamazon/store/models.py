@@ -12,6 +12,7 @@ class Book(models.Model):
     pages = models.IntegerField(default=0, validators = [MinValueValidator(0)]);
     rating = models.FloatField(default=0, validators = [MinValueValidator(0), MaxValueValidator(5.0)]);
     price = models.FloatField(default = 0, validators = [MinValueValidator(0)]);
+    description = models.CharField(default = None, blank = True, null = True, max_length = 1500);
 
     def __str__(self):
         return self.title + " by " + self.author
