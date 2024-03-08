@@ -2,10 +2,9 @@
 
 {% block content %}
 <h1> Scamazon </h1>
-<p> Results: </p>
 <ul>
 {% for instance in book_list %}
-  <li>{{ instance.title }} by {{instance.author}}: ${{instance.price}}</li>
+  <li><a href = "/books/{{instance.isbn}}/">{{ instance.title }} by {{instance.author}}</a>: ${{instance.price}}</li>
 {% endfor %}
 </ul>
 {% endblock %}
