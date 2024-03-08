@@ -56,3 +56,12 @@ def seller_dashboard(request):
     }
 
     return render(request, 'seller_dashboard.html', context=context)
+
+@login_required
+def browse_books(request):
+    book_list = Book.objects.all()
+    context = {
+        "book_list" : book_list,
+    }
+    return render(request, 'browse_books.html', context = context)
+    
