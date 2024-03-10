@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import SignupForm
 from django.contrib.auth.models import Group
+from django.core.exceptions import ObjectDoesNotExist
 
 
 def signup(request):
@@ -56,3 +57,51 @@ def seller_dashboard(request):
     }
 
     return render(request, 'seller_dashboard.html', context=context)
+
+@login_required
+def browse_books(request):
+    book_list = Book.objects.all().order_by('title').values()
+    context = {
+        "book_list" : book_list,
+    }
+    return render(request, 'browse_books.html', context = context)
+
+def browse_authors(request):
+    authors = []
+    temp_authors = Book.objects.order_by('author').values("author")
+    for value in temp_authors:
+        if value not in authors:
+            authors.append(value)
+    context = {
+        'authors': authors,
+    }
+    return render(request, 'browse_authors.html', context = context)
+
+@login_required
+def book(request, isbn):
+    try:
+        book = Book.objects.get(isbn = isbn)
+    except(ObjectDoesNotExist):
+        return render(request, "null_book.html")
+
+
+    context = {
+        "book": book,
+            }
+
+    return render(request, 'book.html', context = context)
+    
+@login_required
+def author(request, author):
+    books = Book.objects.filter(author = author)
+    if(len(books) == 0):
+        return render(request, "null_author.html")
+
+    context = {
+        'book_list' : books,
+    }
+
+    print(context)
+    return render(request, 'browse_books.html', context = context)
+
+   

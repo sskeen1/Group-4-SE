@@ -22,8 +22,8 @@
           {% if user.is_authenticated %}
             <ul class="sidebar-nav">
               <li><a href="">Home</a></li>
-              <li><a href="">All books</a></li>
-              <li><a href="">All authors</a></li>
+              <li><a href="/browse-books/">All books</a></li>
+              <li><a href="/browse-authors/">All authors</a></li>
             </ul>
             <li>User: {{ user.get_username }}</li>
             <li>
