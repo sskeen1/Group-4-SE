@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1> Scamazon </h1>
+<ul>
+{% for author in authors %}
+  <li><a href = "/author/{{author.author}}/"> {{author.author}} </a></li>
+{% endfor %}
+</ul>
+{% endblock %}

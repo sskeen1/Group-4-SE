@@ -1,0 +1,16 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h3> {{book.title}} </h3>
+<h5> <b> Author: </b> {{book.author}} </h5>
+<h5> <b> Price:</b> ${{book.price}} </h5>
+<h6> <b> ISBN:</b> {{book.isbn}} </h6>
+<h6> <b> Pages:</b> {{book.pages}} </h6>
+<p> <b> Description</b> {{book.description}} </p>
+<form action="{% url 'add_cart' book.isbn %}" method="POST">
+    {% csrf_token %}
+    <button type="submit", name="book_id", value="{{ book.isbn }}">Add to Cart</button>
+    </form>
+
+
+{% endblock %}
