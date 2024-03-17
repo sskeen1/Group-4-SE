@@ -31,6 +31,10 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-link">Logout</button>
               </form>
+              <form action="{% url 'cart' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">View my Cart</button>
+    </form>
             </li>
           {% else %}
 

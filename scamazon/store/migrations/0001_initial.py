@@ -18,12 +18,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Book',
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('title', models.CharField(max_length=200)),
                 ('author', models.CharField(max_length=200)),
-                ('isbn', models.CharField(max_length=13)),
+                ('isbn', models.CharField(max_length=13, primary_key=True, serialize=False)),
                 ('pages', models.IntegerField(default=0)),
                 ('rating', models.IntegerField(default=0)),
+                ('quantity', models.IntegerField(default=1)),
                 ('price', models.FloatField()),
             ],
         ),

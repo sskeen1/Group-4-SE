@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect
-from .models import Book
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Book, Listing, Cart
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import SignupForm
@@ -85,11 +85,25 @@ def book(request, isbn):
         return render(request, "null_book.html")
 
 
-    context = {
-        "book": book,
-            }
+@login_required
+def add_cart(request,isbn):
+        listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
+        p = Cart.objects.create(listingID=listing, quantity = 1, userID=request.user.username)
+        return redirect('cart');
+##NEEDS logic for checking if the listing is already in this users cart, adding duplicates will break the DB(not sure why)
 
-    return render(request, 'book.html', context = context)
+@login_required
+def pull_cart(request):
+        cart = Cart.objects.filter(userID=request.user.username);
+        listings = Listing.objects.filter(id__in=cart).values('isbn');
+        books = Book.objects.filter(isbn__in=listings);
+        print(cart);
+        print(listings);
+        print(books);
+
+        return render(request, "cart_display.html",
+        {'pull_cart': books, 'username': request.user.username})
+
     
 @login_required
 def author(request, author):
