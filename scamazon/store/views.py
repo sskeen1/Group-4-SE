@@ -81,15 +81,23 @@ def browse_authors(request):
 def book(request, isbn):
     try:
         book = Book.objects.get(isbn = isbn)
+        listings_list = Listing.objects.all().get(isbn = isbn)
     except(ObjectDoesNotExist):
         return render(request, "null_book.html")
+    
+    context = {
+        "book": book,
+        "listings_list": listings_list,
+            }
+
+    return render(request, 'book.html', context = context)
 
 
 @login_required
 def add_cart(request,isbn):
-        listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
-        p = Cart.objects.create(listingID=listing, quantity = 1, userID=request.user.username)
-        return redirect('cart');
+    listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
+    p = Cart.objects.create(listingID=listing, quantity = 1, userID=request.user.username)
+    return redirect('cart')
 ##NEEDS logic for checking if the listing is already in this users cart, adding duplicates will break the DB(not sure why)
 
 @login_required
