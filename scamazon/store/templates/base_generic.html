@@ -12,7 +12,7 @@
       crossorigin="anonymous">
     <!-- Add additional CSS in static file -->
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+    <link rel="stylesheet" href="{% static 'style.css' %}" />
   </head>
   <body>
     <div class="container-fluid">
@@ -39,16 +39,16 @@
                 <button type="submit" class="btn btn-link">Logout</button>
               </form>
               <form action="{% url 'cart' %}" method="POST">
-    {% csrf_token %}
-    <button type="submit">View my Cart</button>
-    </form>
+                {% csrf_token %}
+                <button type="submit">View my Cart</button>
+              </form>
             </li>
           {% else %}
 
           {% endif %}
           {% endblock %}
         </div>
-        <div class="col-sm-10 ">{% block content %}{% endblock %}</div>
+        <div class="{% if user.is_authenticated %} col-sm-10 {%endif%}">{% block content %}{% endblock %}</div>
       </div>
     </div>
   </body>

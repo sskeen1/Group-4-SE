@@ -15,22 +15,30 @@
     {% endif %}
   {% endif %}
 
-  <form method="post" action="{% url 'login' %}">
-    {% csrf_token %}
-    <table>
-      <tr>
-        <td>{{ form.username.label_tag }}</td>
-        <td>{{ form.username }}</td>
-      </tr>
-      <tr>
-        <td>{{ form.password.label_tag }}</td>
-        <td>{{ form.password }}</td>
-      </tr>
-    </table>
-    <input type="submit" value="login">
-    <input type="hidden" name="next" value="{{ next }}">
-  </form>
+  {% load static %}
+  <div class="center">
+    <img src="{% static '/Scamazon_Logo.png' %}" alt="My image">
 
-  <p><a href="{% url 'signup' %}">Sign up?</a></p>
+    <div class="block flex justify-center">
+      <div>
+        <form method="post" action="{% url 'login' %}">
+          {% csrf_token %}
+          <table>
+            <tr>
+              <td>{{ form.username.label_tag }}</td>
+              <td>{{ form.username }}</td>
+            </tr>
+            <tr>
+              <td>{{ form.password.label_tag }}</td>
+              <td>{{ form.password }}</td>
+            </tr>
+          </table>
+          <input type="submit" value="login">
+          <input type="hidden" name="next" value="{{ next }}">
+        </form>
+        <p><a href="{% url 'signup' %}">Sign up?</a></p>
+      </div>
+    </div>
+  </div>
 
 {% endblock %}
