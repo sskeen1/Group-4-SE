@@ -4,7 +4,7 @@
 <h1> Scamazon </h1>
 <ul>
 {% for instance in book_list %}
-  <li><a href = "/books/{{instance.isbn}}/">{{ instance.title }} by {{instance.author}}</a>: ${{instance.price}}</li>
+  <li><a href = "/books/{{instance.isbn}}/">{{ instance.title }} by {{instance.author}}</a>: ${{instance.price | floatformat:2}}</li>
 {% endfor %}
 </ul>
 {% endblock %}
