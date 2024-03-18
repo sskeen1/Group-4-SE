@@ -13,4 +13,5 @@ urlpatterns = [
     path("author/<str:author>/", views.author, name="author-view"),
     path("cart/", views.pull_cart, name="cart"),
     path("add_cart/<str:isbn>",views.add_cart, name="add_cart"),
+    path("search/", views.search, name="search")
 ]

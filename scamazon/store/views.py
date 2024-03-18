@@ -87,7 +87,7 @@ def book(request, isbn):
     
     context = {
         "book": book,
-        "listings_list": listings_list,
+        "listing_list": listings_list,
             }
 
     return render(request, 'book.html', context = context)
@@ -105,12 +105,9 @@ def pull_cart(request):
         cart = Cart.objects.filter(userID=request.user.username);
         listings = Listing.objects.filter(id__in=cart).values('isbn');
         books = Book.objects.filter(isbn__in=listings);
-        print(cart);
-        print(listings);
-        print(books);
-
+    
         return render(request, "cart_display.html",
-        {'pull_cart': books, 'username': request.user.username})
+            {'pull_cart': books, 'username': request.user.username})
 
     
 @login_required
@@ -123,7 +120,30 @@ def author(request, author):
         'book_list' : books,
     }
 
-    print(context)
     return render(request, 'browse_books.html', context = context)
+
+@login_required
+def search(request):
+    if request.method=="POST":
+        search = request.POST["search"]
+
+        if len(search) == 0:
+            return render(request, "null_search.html", {"search": search})
+
+        results = Book.objects.filter(title__contains=search)
+        results = results | Book.objects.filter(author__contains=search)
+        results = results | Book.objects.filter(isbn=search)
+        results.order_by("title", "author", "rating")
+
+        if len(results) == 0:
+            return render(request, "null_search.html", {"search": search})
+
+        context = {
+                "book_list": results,
+                }
+        return render(request, "browse_books.html", context = context)
+
+    else:
+        return render(request, "null_search.html")
 
    

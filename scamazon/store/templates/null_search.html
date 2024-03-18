@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+<h1> Scamazon </h1>
+{% if search %}
+ <p>No Results Found</p>
+{% else %}
+  <p>No Query Given </p>
+{% endif %}
+{% endblock %}

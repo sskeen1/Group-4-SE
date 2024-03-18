@@ -6,13 +6,13 @@
 
 {% for book in pull_cart %}
     <h1>{{ book }}</h1>
-    Quantity: {{  book.quantity }}
+    Quantity: {{ book.quantity }}
     <br>
-    Price: ${{ book.price }}
+    Price: ${{ book.price | floatformat:2 }}
     <br>
     Page Count: {{ book.pages }}
     <br>
-    Rating: {{ book.rating }}/5
+    Rating: {{ book.rating | floatformat:1 }}/5.0
     <br>
 
 {% endfor %}
