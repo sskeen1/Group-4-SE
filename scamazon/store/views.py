@@ -96,9 +96,12 @@ def book(request, isbn):
 @login_required
 def add_cart(request,isbn):
     listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
-    p = Cart.objects.create(listingID=listing, quantity = 1, userID=request.user.username)
-    return redirect('cart')
-##NEEDS logic for checking if the listing is already in this users cart, adding duplicates will break the DB(not sure why)
+    cart = Cart.objects.filter(userID=request.user.username);
+    if listing in cart:
+        return redirect('cart')
+    else:
+        p = Cart.objects.create(listingID=listing, quantity=1, userID=request.user.username)
+        return redirect('cart')
 
 @login_required
 def pull_cart(request):
