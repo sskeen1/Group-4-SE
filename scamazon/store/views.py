@@ -50,10 +50,12 @@ def buyer_dashboard(request):
 @login_required
 def seller_dashboard(request):
     num_books = Book.objects.all().count()
+    listings_list = Listing.objects.filter(userID=request.user.id)
 
     context = {
         'num_books': num_books,
         'user_type': request.user.type,
+        'listing_list': listings_list
     }
 
     return render(request, 'seller_dashboard.html', context=context)

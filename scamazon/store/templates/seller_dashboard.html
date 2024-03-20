@@ -9,4 +9,11 @@
     <li><strong>Books:</strong> {{ num_books }}</li>
     <li><strong>User Type:</strong> {{ user_type }}</li>
   </ul>
+
+  <h2>Your listings: </h2>
+  </ul>
+  {%for listing in listing_list %}
+    <li>{{listing.isbn.title}} listed by {{listing.userID.username}}</li>
+  {%endfor%}
+  </ul>
 {% endblock %}

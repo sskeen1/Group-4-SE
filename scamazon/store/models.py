@@ -27,7 +27,7 @@ class Listing(models.Model):
     listingID = models.CharField(max_length = 13);
     isbn = models.ForeignKey(Book, null = True, on_delete=models.CASCADE);
     quantity = models.IntegerField(default = 1);
-    userID = models.CharField(max_length=20);
+    userID = models.ForeignKey(CustomUser, null = True, on_delete=models.DO_NOTHING);
 
 class Cart(models.Model):
     listingID = models.ForeignKey(Listing, null = True, on_delete=models.CASCADE);
