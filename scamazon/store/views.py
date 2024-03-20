@@ -96,16 +96,28 @@ def book(request, isbn):
 @login_required
 def add_cart(request,isbn):
     listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
-    cart = Cart.objects.filter(userID=request.user.username);
-    if listing in cart:
+    cart = Cart.objects.filter(userID=request.user.username).values('listingID')
+    cartlistings = Listing.objects.filter(id__in=cart)
+
+    if listing in cartlistings:
         return redirect('cart')
     else:
         p = Cart.objects.create(listingID=listing, quantity=1, userID=request.user.username)
         return redirect('cart')
 
 @login_required
+def remove_cart(request,isbn):
+    listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
+    cart = Cart.objects.filter(userID=request.user.username);
+    if listing in cart:
+        p = Cart.objects.filter(listingID=listing, quantity=1, userID=request.user.username).delete()
+        return redirect('cart')
+    else:
+        return redirect('cart')
+
+@login_required
 def pull_cart(request):
-        cart = Cart.objects.filter(userID=request.user.username);
+        cart = Cart.objects.filter(userID=request.user.username).values_list('listingID');
         listings = Listing.objects.filter(id__in=cart).values('isbn');
         books = Book.objects.filter(isbn__in=listings);
     
