@@ -14,6 +14,10 @@
     <br>
     Rating: {{ book.rating | floatformat:1 }}/5.0
     <br>
+    <form action="{% url 'remove_cart' book.isbn %}" method="POST">
+        {% csrf_token %}
+        <button type="submit", name="book_id", value="{{ book.isbn }}">Remove From Cart</button>
+        </form>
 
 {% endfor %}
 <form action="{% url 'browse-books' %}" method="POST">

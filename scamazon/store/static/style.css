@@ -12,3 +12,24 @@
   margin: 0;
   display: inline;
 }
+
+body {
+  background-color:burlywood;
+}
+
+.block {
+  padding-top: 40px;
+}
+
+.center {
+  width: 50%;
+  margin: auto;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-center {
+  justify-content: center;
+}
