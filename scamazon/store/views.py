@@ -83,7 +83,8 @@ def browse_authors(request):
 def book(request, isbn):
     try:
         book = Book.objects.get(isbn = isbn)
-        listings_list = Listing.objects.all().get(isbn = isbn)
+        listings_list = Listing.objects.filter(isbn = isbn).order_by('price')
+        print(listings_list)
     except(ObjectDoesNotExist):
         return render(request, "null_book.html")
     
@@ -124,7 +125,7 @@ def pull_cart(request):
         books = Book.objects.filter(isbn__in=listings);
     
         return render(request, "cart_display.html",
-            {'pull_cart': books, 'username': request.user.username})
+                      {'books': books,'listings': listings ,'username': request.user.username})
 
     
 @login_required
