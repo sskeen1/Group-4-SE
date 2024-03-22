@@ -1,0 +1,10 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Listing: {{listing.listingID}}</h1>
+  <image src="{{ listing.image.image.url }}" alt="{{ listing.image.image.url }} height="200 width="115" ></image>
+  <div>{{listing.isbn}}</div>
+  <div>Priced at: {{listing.price}}</div>
+  <div>Quantity: {{listing.quantity}}</div>
+  <div><a href="/seller">Go Back</a></div>
+{% endblock %}

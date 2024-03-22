@@ -3,7 +3,7 @@
 {% block content %}
 <h3> {{book.title}} </h3>
 
-{% for listing in listing_list %}}
+{% for listing in listing_list %}
     <image src="{{ listing.image.image.url }}" alt="{{ listing.image.image.url }} height="200 width="115" >
     <p> ${{ listing.price | floatformat:2 }} </p>
     <p> Quantity: {{ listing.quantity }} </p>
