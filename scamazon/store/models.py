@@ -29,8 +29,8 @@ class Listing(models.Model):
     listingID = models.CharField(max_length = 13);
     isbn = models.ForeignKey(Book, null = True, on_delete=models.CASCADE);
     quantity = models.IntegerField(default = 1);
+    userID = models.ForeignKey(CustomUser, null = True, on_delete=models.DO_NOTHING);
     price = models.FloatField(default = 0, validators = [MinValueValidator(0)]);
-    userID = models.CharField(max_length=20);
     image = models.ForeignKey(Image, null = True, on_delete=models.CASCADE);
 
 class Cart(models.Model):

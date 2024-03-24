@@ -19,7 +19,7 @@
       <div class="row">
         <div class="col-sm-2">
           {% block sidebar %}
-          {% if user.is_authenticated %}
+          {% if user.is_authenticated and user.type == "Buyer"%}
             <ul class="sidebar-nav">
               <li><a href="/">Home</a></li>
               <li><a href="/browse-books/">All books</a></li>
@@ -43,8 +43,12 @@
                 <button type="submit">View my Cart</button>
               </form>
             </li>
+          {% elif  user.is_authenticated and user.type == "Seller"%}
+          <form id="logout-form" method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-link">Logout</button>
+          </form>
           {% else %}
-
           {% endif %}
           {% endblock %}
         </div>

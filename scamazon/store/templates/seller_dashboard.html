@@ -9,4 +9,15 @@
     <li><strong>Books:</strong> {{ num_books }}</li>
     <li><strong>User Type:</strong> {{ user_type }}</li>
   </ul>
+
+  <h2>Your listings: </h2>
+  </ul>
+  {%for listing in listing_list %}
+    <li><a href="/seller/listings/{{listing.id}}"> Listing {{listing.id}}: </a> {{listing.quantity}} Copies of "{{listing.isbn}}" at ${{listing.price}}</li>
+  {%endfor%}
+  </ul>
+  <form action="{% url 'add_listing' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Add a Listing</button>
+    </form>
 {% endblock %}
