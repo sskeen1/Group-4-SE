@@ -243,10 +243,19 @@ def add_book(request):
 
     # If this is a GET (or any other method) create the default form.
     else:
-        form = ListingForm()
+        form = BookForm()
 
     context = {
         'form': form,
     }
 
     return render(request, 'add_listing.html', context)
+
+@login_required
+def remove_listing(request,id):
+    listing = get_object_or_404(Listing, id=request.POST.get('listing_id'))
+    if listing:
+        listing.delete()
+        return redirect('/seller/')
+    else:
+        return redirect('/seller/')

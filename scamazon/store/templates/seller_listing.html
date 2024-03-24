@@ -1,10 +1,14 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-  <h1>Listing: {{listing.listingID}}</h1>
+  <h1>Listing: {{listing.id}}</h1>
   <image src="{{ listing.image.image.url }}" alt="{{ listing.image.image.url }} height="200 width="115" ></image>
   <div>{{listing.isbn}}</div>
   <div>Priced at: {{listing.price}}</div>
   <div>Quantity: {{listing.quantity}}</div>
+  <form action="{% url 'remove_listing' listing.id %}" method="POST">
+    {% csrf_token %}
+    <button type="submit", name="listing_id", value="{{ listing.id }}">Remove Listing</button>
+    </form>
   <div><a href="/seller">Go Back</a></div>
 {% endblock %}
