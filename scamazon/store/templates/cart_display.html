@@ -4,30 +4,42 @@
 
     <h1> {{username}}'s Cart: </h1>
 
-{% for book in books %}
-    <h1>{{ book }}</h1>
-    Quantity: {{ book.quantity }}
-    <br>
-    Price: ${{ book.price | floatformat:2 }}
-    <br>
-    Page Count: {{ book.pages }}
-    <br>
-    Rating: {{ book.rating | floatformat:1 }}/5.0
-    <br>
-    <form action="{% url 'remove_cart' book.isbn %}" method="POST">
+<div class="cart-objects-holder">
+{% for cartObject in cart %}
+    <div class="cart-object">
+    <h3 class="mt-10">{{ cartObject.listingID.isbn.title }}</h3>
+    <h4 class="mt-10"> by {{ cartObject.listingID.isbn.author }}</h4>
+    <h5>Listing: {{cartObject.listingID.id}}</h5>
+    <image src="{{ cartObject.listingID.image.image.url }}" alt="{{ cartObject.listingID.image.image.url }}" height=200 width=115 >
+    <div class="mt-10">Price: ${{ cartObject.listingID.price | floatformat:2 }}</div>
+    <div class="mt-10">Page Count: {{ cartObject.listingID.isbn.pages }}</div>
+    <div class="mt-10">Rating: {{ cartObject.listingID.isbn.rating | floatformat:1 }}/5.0</div>
+    <form class="mt-10" action="{% url 'increase_cart_quantity' cartObject.listingID.id %}" method="POST">
         {% csrf_token %}
-        <button type="submit", name="book_id", value="{{ book.isbn }}">Remove From Cart</button>
+        <button type="submit", name="id", value="{{ cartObject.listingID.id }}">↑</button>
         </form>
+    Quantity: {{ cartObject.quantity }}
+    <form action="{% url 'decrease_cart_quantity' cartObject.listingID.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit", name="id", value="{{ cartObject.listingID.id }}">↓</button>
+        </form>
+    <form class="mt-10" action="{% url 'remove_cart' cartObject.listingID.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit", name="id", value="{{ cartObject.listingID.id }}">Remove From Cart</button>
+        </form>
+    </div>
 
 {% endfor %}
-<form action="{% url 'browse-books' %}" method="POST">
+</div>
+
+<div class="dual-button-holder">
+<form class="" action="{% url 'browse-books' %}" method="POST">
     {% csrf_token %}
     <button type="submit">Return to Browsing</button>
     </form>
-    <br>
-    </br>
     <form action="{% url 'checkout' %}" method="POST">
     {% csrf_token %}
     <button type="submit">Checkout</button>
+</div>
 
 {% endblock %}

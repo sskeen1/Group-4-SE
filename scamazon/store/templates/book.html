@@ -7,15 +7,15 @@
 
 {% for listing in listing_list %}
     <div class="listing-display">
-        <image src="{{ listing.image.image.url }}" alt="{{ listing.image.image.url }} height="200 width="115" >
+        <image src="{{ listing.image.image.url }}" alt="{{ listing.image.image.url }}" height=200 width=115 >
         <div> ${{ listing.price | floatformat:2 }} </div>
         <div> Quantity: {{ listing.quantity }} </div>
         <div> Seller: {{ listing.userID }} </div>
-        <div> Listing ID: {{ listing.listingID }} </div>
+        <div> Listing ID: {{ listing.id }} </div>
 
-        <form action="{% url 'add_cart' book.isbn %}" method="POST">
+        <form action="{% url 'add_cart' listing.id %}" method="POST">
         {% csrf_token %}
-        <button type="submit", name="book_id", value="{{ book.isbn }}">Add to Cart</button>
+        <button type="submit", name="id", value="{{ listing.id }}">Add to Cart</button>
         </form>
     </div>
 
@@ -26,5 +26,10 @@
 {%if not listing_list %}
     <div>No listings for this book are currently posted :(</div>
 {%endif %}
+
+<form class="mt-10" action="{% url 'browse-books' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit", name="id", value="{{ listing.id }}">Go Back</button>
+    </form>
 
 {% endblock %}

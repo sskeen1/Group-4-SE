@@ -9,4 +9,9 @@
     <li><strong>Books:</strong> {{ num_books }}</li>
     <li><strong>User Type:</strong> {{ user_type }}</li>
   </ul>
+
+  <form class="mt-10" action="{% url 'browse-books' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit", name="id", value="{{ listing.id }}">Browse Books</button>
+    </form>
 {% endblock %}
