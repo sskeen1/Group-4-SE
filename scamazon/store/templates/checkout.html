@@ -1,0 +1,15 @@
+
+
+{% block checkout %}
+
+<div class="center block">
+    <h2 class="center">Checkout</h2>
+    <div class="block">
+        <form action="{% url 'checkout' %}" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit", name ="checkout">Finish</button>
+        </form>
+    </div>
+
+{% endblock %}
