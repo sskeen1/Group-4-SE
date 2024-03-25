@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book, Listing, Cart
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .forms import SignupForm
+from .forms import SignupForm, CheckoutForm
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -81,7 +81,8 @@ def browse_authors(request):
 def book(request, isbn):
     try:
         book = Book.objects.get(isbn = isbn)
-        listings_list = Listing.objects.all().get(isbn = isbn)
+        listings_list = Listing.objects.filter(isbn = isbn).order_by('price')
+        print(listings_list)
     except(ObjectDoesNotExist):
         return render(request, "null_book.html")
     
@@ -108,12 +109,31 @@ def add_cart(request,isbn):
 @login_required
 def remove_cart(request,isbn):
     listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
-    cart = Cart.objects.filter(userID=request.user.username);
-    if listing in cart:
+    cart = Cart.objects.filter(userID=request.user.username).values('listingID');
+    cartlistings = Listing.objects.filter(id__in=cart)
+
+    if listing in cartlistings:
         p = Cart.objects.filter(listingID=listing, quantity=1, userID=request.user.username).delete()
         return redirect('cart')
     else:
         return redirect('cart')
+
+@login_required
+def checkout(request):
+    if 'checkout' in request.POST:
+        form = CheckoutForm(request.POST)
+
+        #data would need to be verified and used here once changes to models are implemented
+        #print(form)
+
+        cart = Cart.objects.filter(userID=request.user.username).values('listingID')
+        cartlistings = Listing.objects.filter(id__in=cart).delete()
+        Cart.objects.filter(userID=request.user.username).delete()
+
+        return redirect('cart')
+    else:
+        form = CheckoutForm()
+        return render(request, 'checkout.html', {'form': form})
 
 @login_required
 def pull_cart(request):
@@ -122,7 +142,7 @@ def pull_cart(request):
         books = Book.objects.filter(isbn__in=listings);
     
         return render(request, "cart_display.html",
-            {'pull_cart': books, 'username': request.user.username})
+                      {'books': books,'listings': listings ,'username': request.user.username})
 
     
 @login_required

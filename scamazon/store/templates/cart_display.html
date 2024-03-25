@@ -4,7 +4,7 @@
 
     <h1> {{username}}'s Cart: </h1>
 
-{% for book in pull_cart %}
+{% for book in books %}
     <h1>{{ book }}</h1>
     Quantity: {{ book.quantity }}
     <br>
@@ -24,5 +24,10 @@
     {% csrf_token %}
     <button type="submit">Return to Browsing</button>
     </form>
+    <br>
+    </br>
+    <form action="{% url 'checkout' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Checkout</button>
 
 {% endblock %}
