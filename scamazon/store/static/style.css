@@ -107,6 +107,10 @@ button {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
     }
+
+    a {
+      color: blue;
+    }
   }
 
 .form-signup {
@@ -114,6 +118,11 @@ button {
   margin-top: 50px;
   padding: 20px 40px;
   border-radius: 10px;
+  color: black;
+
+  a {
+    color: blue;
+  }
 }
 
 .mt-10 {
@@ -154,4 +163,60 @@ a, .btn-link {
   div {
     margin-top: 2px;
   }
+}
+
+.dual-button-holder {
+  width: 50%;
+  margin: auto;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 40px;
+}
+
+.cart-objects-holder {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.cart-object, .listing-display {
+  margin: 40px auto;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding: 40px;
+  width: max-content;
+  border-radius: 20px;
+}
+
+.listing-display {
+  background-color: rgb(37, 50, 103);
+}
+
+.cart-object {
+  background-color: rgb(67, 33, 85);
+  padding: 40px 100px 40px 60px;
+}
+
+.books-holder {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.book-holder {
+  margin: 40px auto;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 4px 6px;
+  padding: 40px;
+  width: max-content;
+  border-radius: 20px;
+  background-color: rgb(99, 54, 38);
+
+  color: white;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.book-title {
+  font-size: x-large;
 }

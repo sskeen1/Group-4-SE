@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book, Listing, Cart
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .forms import SignupForm, CheckoutForm, ListingForm, BookForm
+from .forms import SignupForm, ListingForm, BookForm, CheckoutForm
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -97,8 +97,8 @@ def book(request, isbn):
 
 
 @login_required
-def add_cart(request,isbn):
-    listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
+def add_cart(request,id):
+    listing = get_object_or_404(Listing, id=request.POST.get('id'))
     cart = Cart.objects.filter(userID=request.user.username).values('listingID')
     cartlistings = Listing.objects.filter(id__in=cart)
 
@@ -109,16 +109,28 @@ def add_cart(request,isbn):
         return redirect('cart')
 
 @login_required
-def remove_cart(request,isbn):
-    listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
-    cart = Cart.objects.filter(userID=request.user.username).values('listingID');
-    cartlistings = Listing.objects.filter(id__in=cart)
+def remove_cart(request,id):
+    listing = get_object_or_404(Listing, id=request.POST.get('id'))
+    print(listing)
+    cart = Cart.objects.filter(userID=request.user.username).values('listingID')
+    print(cart)
+    cartlisting = Listing.objects.filter(id__in=cart)
 
-    if listing in cartlistings:
-        p = Cart.objects.filter(listingID=listing, quantity=1, userID=request.user.username).delete()
+    if listing in cartlisting:
+        p = Cart.objects.filter(listingID=listing, userID=request.user.username).delete()
         return redirect('cart')
     else:
         return redirect('cart')
+
+@login_required
+def pull_cart(request):
+        cart = Cart.objects.filter(userID=request.user.username)
+        listings = Listing.objects.filter(id__in=cart).values('isbn')
+        books = Book.objects.filter(isbn__in=listings)
+    
+        return render(request, "cart_display.html",
+                      {'books': books,'listings': listings ,'username': request.user.username, 'cart': cart})
+
 
 @login_required
 def checkout(request):
@@ -129,22 +141,21 @@ def checkout(request):
         #print(form)
 
         cart = Cart.objects.filter(userID=request.user.username).values('listingID')
-        cartlistings = Listing.objects.filter(id__in=cart).delete()
+        cartlistings = Listing.objects.filter(id__in=cart)
+
+        for listing in cartlistings:
+            if listing.quantity > 1:
+                listing.quantity -= 1
+                listing.save()
+            else:
+                listing.delete()
+
         Cart.objects.filter(userID=request.user.username).delete()
 
         return redirect('cart')
     else:
         form = CheckoutForm()
         return render(request, 'checkout.html', {'form': form})
-
-@login_required
-def pull_cart(request):
-        cart = Cart.objects.filter(userID=request.user.username).values_list('listingID');
-        listings = Listing.objects.filter(id__in=cart).values('isbn');
-        books = Book.objects.filter(isbn__in=listings);
-    
-        return render(request, "cart_display.html",
-                      {'books': books,'listings': listings ,'username': request.user.username})
 
     
 @login_required
@@ -278,3 +289,41 @@ def remove_listing(request,id):
         return redirect('/seller/')
     else:
         return redirect('/seller/')
+    
+@login_required
+def decrease_cart_quantity(request, id):
+    listing = get_object_or_404(Listing, id=request.POST.get('id'))
+    cart = Cart.objects.filter(userID=request.user.username).values('listingID')
+    cartlisting = Listing.objects.filter(id__in=cart)
+
+    if listing in cartlisting:
+        p = Cart.objects.filter(listingID=listing, userID=request.user.username)
+        for cartObject in p:
+            if cartObject.quantity > 1:
+                cartObject.quantity -= 1
+                cartObject.save()
+            else:
+                cartObject.delete()
+        return redirect('cart')
+    else:
+        return redirect('cart')
+    
+@login_required
+def increase_cart_quantity(request, id):
+    listing = get_object_or_404(Listing, id=request.POST.get('id'))
+    cart = Cart.objects.filter(userID=request.user.username).values('listingID')
+    cartlisting = Listing.objects.filter(id__in=cart)
+
+    if listing in cartlisting:
+        p = Cart.objects.filter(listingID=listing, userID=request.user.username)
+        for cartObject in p:
+            print(listing.quantity)
+            print(cartObject.quantity + 1)
+            if listing.quantity >= cartObject.quantity + 1:
+                cartObject.quantity += 1
+                cartObject.save()
+            else:
+                pass
+        return redirect('cart')
+    else:
+        return redirect('cart')
