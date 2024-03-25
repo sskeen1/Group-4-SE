@@ -24,5 +24,10 @@
     {% csrf_token %}
     <button type="submit">Return to Browsing</button>
     </form>
+    <br>
+    </br>
+    <form action="{% url 'checkout' %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Checkout</button>
 
 {% endblock %}

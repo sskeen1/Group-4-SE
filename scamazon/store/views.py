@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book, Listing, Cart
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .forms import SignupForm, ListingForm, BookForm
+from .forms import SignupForm, CheckoutForm, ListingForm, BookForm
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -111,12 +111,31 @@ def add_cart(request,isbn):
 @login_required
 def remove_cart(request,isbn):
     listing = get_object_or_404(Listing, isbn=request.POST.get('book_id'))
-    cart = Cart.objects.filter(userID=request.user.username);
-    if listing in cart:
+    cart = Cart.objects.filter(userID=request.user.username).values('listingID');
+    cartlistings = Listing.objects.filter(id__in=cart)
+
+    if listing in cartlistings:
         p = Cart.objects.filter(listingID=listing, quantity=1, userID=request.user.username).delete()
         return redirect('cart')
     else:
         return redirect('cart')
+
+@login_required
+def checkout(request):
+    if 'checkout' in request.POST:
+        form = CheckoutForm(request.POST)
+
+        #data would need to be verified and used here once changes to models are implemented
+        #print(form)
+
+        cart = Cart.objects.filter(userID=request.user.username).values('listingID')
+        cartlistings = Listing.objects.filter(id__in=cart).delete()
+        Cart.objects.filter(userID=request.user.username).delete()
+
+        return redirect('cart')
+    else:
+        form = CheckoutForm()
+        return render(request, 'checkout.html', {'form': form})
 
 @login_required
 def pull_cart(request):

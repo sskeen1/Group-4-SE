@@ -6,6 +6,11 @@ TYPES =(
     ("Buyer", "Buyer"), 
     ("Seller", "Seller"), 
 )
+paytypes = (
+("Visa", "Visa"),
+("PayPal", "PayPal"),
+("Credit", "Credit"),
+)
 
 class SignupForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')
@@ -15,6 +20,13 @@ class SignupForm(UserCreationForm):
         model = CustomUser
         fields = ('username', 'email', 'type', 'password1', 'password2')
 
+class CheckoutForm(forms.Form):
+    address = forms.CharField(max_length=30)
+    paymentType = forms.ChoiceField(choices=paytypes)
+    cardNum = forms.CharField(max_length=16)
+    CVV = forms.CharField(max_length=3)
+    Expiration = forms.DateField()
+    
 class ListingForm(forms.Form):
     isbn = forms.CharField(max_length=13)
     quantity = forms.IntegerField(initial= 1, min_value=1, max_value=99);
