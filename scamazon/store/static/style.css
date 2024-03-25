@@ -1,3 +1,8 @@
+body {
+  background-color: rgba(28,23,47,255);
+  color: white;
+}
+
 .sidebar-nav {
     margin-top: 20px;
     padding: 0;
@@ -11,10 +16,6 @@
   padding: 0;
   margin: 0;
   display: inline;
-}
-
-body {
-  background-color:burlywood;
 }
 
 .block {
@@ -32,4 +33,112 @@ body {
 
 .justify-center {
   justify-content: center;
+}
+
+button {
+  background-color: #ced4da;
+  border: none;
+  &:hover, &:focus {
+    background: rgba(255,255,255,0.1);
+    box-shadow:none;
+  }
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 4px;
+}
+
+
+.form-signin {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  border-radius: 3px;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  
+  
+    h1 {
+    margin-top: 0px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color:#353232;
+    padding:15px;
+    text-align:center;
+    }
+  
+    form {
+    padding:15px;
+    
+    .btn {
+      background-color: #ced4da;
+      &:hover, &:focus {
+        background: rgba(255,255,255,0.1);
+        box-shadow:none;
+      }
+    }
+    
+    .form-control:focus {
+      border-color:#ced4da;
+      box-shadow: 5px 5px 30px rgba(0,0,0,0.2);
+    }
+    }
+  
+    .form-control {
+    background:rgba(255,255,255,0.9);
+    display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  
+    .form-floating {
+      margin-bottom: 10px;
+    &:focus-within {
+      z-index: 2;
+    }
+    }
+  
+    .floating-input {
+    margin-bottom: 10px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+    }
+  }
+
+.form-signup {
+  background-color: white;
+  margin-top: 50px;
+  padding: 20px 40px;
+  border-radius: 10px;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.center-text {
+  width: max-content;
+  margin: auto;
+}
+
+a, .btn-link {
+  color: blanchedalmond;
+}
+
+.sidebar {
+  padding-top: 30px;
+  padding-left: 40px;
+}
+
+.logged-in-content {
+  padding: 30px 55px;
+}
+
+#search-button {
+  width: min-content;
+  padding: 5px 10px;
 }

@@ -17,4 +17,8 @@
 
 {% endfor %}
 
+{%if not listing_list %}
+    <div>No listings for this book are currently posted :(</div>
+{%endif %}
+
 {% endblock %}
