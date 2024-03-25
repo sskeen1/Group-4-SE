@@ -3,18 +3,28 @@
 {% block content %}
 <h3> {{book.title}} </h3>
 
-{% for listing in listing_list %}
-    <image src="{{ listing.image.image.url }}" alt="{{ listing.image.image.url }} height="200 width="115" >
-    <p> ${{ listing.price | floatformat:2 }} </p>
-    <p> Quantity: {{ listing.quantity }} </p>
-    <p> Seller: {{ listing.userID }} </p>
-    <p> Listing ID: {{ listing.listingID }} </p>
+<div class="listings-display">
 
-<form action="{% url 'add_cart' book.isbn %}" method="POST">
-    {% csrf_token %}
-    <button type="submit", name="book_id", value="{{ book.isbn }}">Add to Cart</button>
-    </form>
+{% for listing in listing_list %}
+    <div class="listing-display">
+        <image src="{{ listing.image.image.url }}" alt="{{ listing.image.image.url }} height="200 width="115" >
+        <div> ${{ listing.price | floatformat:2 }} </div>
+        <div> Quantity: {{ listing.quantity }} </div>
+        <div> Seller: {{ listing.userID }} </div>
+        <div> Listing ID: {{ listing.listingID }} </div>
+
+        <form action="{% url 'add_cart' book.isbn %}" method="POST">
+        {% csrf_token %}
+        <button type="submit", name="book_id", value="{{ book.isbn }}">Add to Cart</button>
+        </form>
+    </div>
 
 {% endfor %}
+
+</div>
+
+{%if not listing_list %}
+    <div>No listings for this book are currently posted :(</div>
+{%endif %}
 
 {% endblock %}

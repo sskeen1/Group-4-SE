@@ -17,32 +17,32 @@
   <body>
     <div class="container-fluid">
       <div class="row">
-        <div class="col-sm-2">
+        <div class="col-sm-2 sidebar">
           {% block sidebar %}
           {% if user.is_authenticated and user.type == "Buyer"%}
-            <ul class="sidebar-nav">
-              <li><a href="/">Home</a></li>
-              <li><a href="/browse-books/">All books</a></li>
-              <li><a href="/browse-authors/">All authors</a></li>
-            </ul>
-            <li>User: {{ user.get_username }}</li>
-            <li>
-            <form class="d-flex" method="post" style="display:inline" action="{% url 'search' %}">
+            <div class="sidebar-nav">
+              <div><a href="/">Home</a></div>
+              <div><a href="/browse-books/">All books</a></div>
+              <div><a href="/browse-authors/">All authors</a></div>
+            </div>
+            <div class="mt-10">User: {{ user.get_username }}</div>
+            <div>
+            <form class="d-flex mt-10" method="post" style="display:inline" action="{% url 'search' %}">
                 {% csrf_token %}
                 <input class="form-control me-2" type="search" name="search">
-                <button type="submit">Search</button>
+                <button id="search-button" type="submit">Search</button>
               </form>
-            </li>
-            <li>
-              <form id="logout-form" method="post" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-link">Logout</button>
-              </form>
-              <form action="{% url 'cart' %}" method="POST">
+            </div>
+            <div>
+              <form class="mt-10" action="{% url 'cart' %}" method="POST">
                 {% csrf_token %}
                 <button type="submit">View my Cart</button>
               </form>
-            </li>
+              <form id="logout-form" class="mt-10" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link">Logout</button>
+              </form>
+            </div>
           {% elif  user.is_authenticated and user.type == "Seller"%}
           <form id="logout-form" method="post" action="{% url 'logout' %}">
             {% csrf_token %}
@@ -52,7 +52,7 @@
           {% endif %}
           {% endblock %}
         </div>
-        <div class="{% if user.is_authenticated %} col-sm-10 {%endif%}">{% block content %}{% endblock %}</div>
+        <div class="{% if user.is_authenticated %} col-sm-10 logged-in-content {%endif%}">{% block content %}{% endblock %}</div>
       </div>
     </div>
   </body>
