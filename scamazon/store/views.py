@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Book, Listing, Cart
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .forms import SignupForm, CheckoutForm
+from .forms import SignupForm, CheckoutForm, ListingForm, BookForm
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -50,10 +50,12 @@ def buyer_dashboard(request):
 @login_required
 def seller_dashboard(request):
     num_books = Book.objects.all().count()
+    listings_list = Listing.objects.filter(userID=request.user.id)
 
     context = {
         'num_books': num_books,
         'user_type': request.user.type,
+        'listing_list': listings_list
     }
 
     return render(request, 'seller_dashboard.html', context=context)
@@ -181,4 +183,98 @@ def search(request):
     else:
         return render(request, "null_search.html")
 
-   
+@login_required
+def seller_listing(request, id):
+    try: 
+        listing = Listing.objects.get(id = id)
+    except(ObjectDoesNotExist):
+        return render(request, "null_book.html")
+    
+    context = {
+        "listing": listing,
+            }
+
+    return render(request, 'seller_listing.html', context = context)
+
+@login_required
+def add_listing(request, isbn=''):
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = ListingForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            
+            #book already exists
+            if (Book.objects.filter(isbn=form.cleaned_data['isbn'])):
+                book = Book.objects.filter(isbn=form.cleaned_data['isbn'])[0]
+                new_listing = Listing(
+                    listingID = 0,
+                    isbn = book,
+                    quantity=form.cleaned_data['quantity'],
+                    price=form.cleaned_data['price'],
+                    userID=request.user,
+                    image=form.cleaned_data['image']
+                )
+                new_listing.save()
+            else:
+                return redirect('/seller/add_book')
+
+            # redirect to a new URL:
+            return redirect('/seller')
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = ListingForm(initial={'isbn': isbn})
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'add_listing.html', context)
+
+@login_required
+def add_book(request):
+     # If this is a POST request then process the Form data
+    if request.method == 'POST':
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = BookForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required (here we just write it to the model due_back field)
+            newBook = Book(
+                isbn = form.cleaned_data['isbn'],
+                title = form.cleaned_data['title'],
+                author = form.cleaned_data['author'],
+                pages = form.cleaned_data['pages'],
+                rating = form.cleaned_data['rating'],
+                description = form.cleaned_data['description'],
+            )
+            newBook.save()
+
+            # redirect to a new URL:
+            return redirect('/seller/add_listing/' + form.cleaned_data['isbn'])
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = BookForm()
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'add_listing.html', context)
+
+@login_required
+def remove_listing(request,id):
+    listing = get_object_or_404(Listing, id=request.POST.get('listing_id'))
+    if listing:
+        listing.delete()
+        return redirect('/seller/')
+    else:
+        return redirect('/seller/')
