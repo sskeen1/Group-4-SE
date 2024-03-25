@@ -142,3 +142,16 @@ a, .btn-link {
   width: min-content;
   padding: 5px 10px;
 }
+
+.listings-display {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 50px;
+}
+
+.listing-display {
+  div {
+    margin-top: 2px;
+  }
+}
