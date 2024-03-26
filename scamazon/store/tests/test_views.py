@@ -1,11 +1,12 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from store.models import Book
+from store.models import Book, CustomUser
+
 
 class BrowseBookViewTest(TestCase):
-    @classmethod
-    def setUpTestData(cls):
+
+    def setUp(self):
         # Create 5 books for tests
         number_of_books = 5
 
@@ -19,30 +20,22 @@ class BrowseBookViewTest(TestCase):
                 description=f'Here is example book {book_id}'
             )
 
-    def test_view_url_exists_at_desired_location(self):
-        response = self.client.get('/store/books/')
-        self.assertEqual(response.status_code, 200)
+        test_user1 = CustomUser.objects.create_user(username='testbuyer1', password='group4se', type="Buyer")
+        test_user1.save()
 
-    def test_view_url_accessible_by_name(self):
-        response = self.client.get(reverse('authors'))
+    def test_view_url_exists_at_desired_location(self):
+        login = self.client.login(username='testbuyer1', password='group4se')
+        response = self.client.get('/browse-books/')
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template(self):
-        response = self.client.get(reverse('authors'))
+        login = self.client.login(username='testbuyer1', password='group4se')
+        response = self.client.get('/browse-books/')
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'catalog/author_list.html')
+        self.assertTemplateUsed(response, 'browse_books.html')
 
-    def test_pagination_is_ten(self):
-        response = self.client.get(reverse('authors'))
+    def test_book_display_is_correct_length(self):
+        login = self.client.login(username='testbuyer1', password='group4se')
+        response = self.client.get('/browse-books/')
         self.assertEqual(response.status_code, 200)
-        self.assertTrue('is_paginated' in response.context)
-        self.assertTrue(response.context['is_paginated'] == True)
-        self.assertEqual(len(response.context['author_list']), 10)
-
-    def test_lists_all_authors(self):
-        # Get second page and confirm it has (exactly) remaining 3 items
-        response = self.client.get(reverse('authors')+'?page=2')
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('is_paginated' in response.context)
-        self.assertTrue(response.context['is_paginated'] == True)
-        self.assertEqual(len(response.context['author_list']), 3)
+        self.assertEqual(len(response.context['book_list']), 5)
