@@ -22,7 +22,7 @@ class Book(models.Model):
 
 
 class Image(models.Model):
-    image = models.ImageField(upload_to = 'media/')
+    image = models.ImageField(upload_to = '')
 
 
 class Listing(models.Model):

@@ -138,7 +138,7 @@ LOGIN_REDIRECT_URL = '/'
 AUTH_USER_MODEL = 'store.CustomUser'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = 'media/'
 
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
