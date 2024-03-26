@@ -153,3 +153,5 @@ if 'DATABASE_URL' in os.environ:
         conn_max_age=500,
         conn_health_checks=True,
     )
+
+CSRF_TRUSTED_ORIGINS = ['http://reesesorrell1.pythonanywhere.com/', 'https://reesesorrell1.pythonanywhere.com/']
