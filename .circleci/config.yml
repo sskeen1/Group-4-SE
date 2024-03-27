@@ -20,9 +20,7 @@ jobs:
           name: Running tests
           command: |
             . venv/bin/activate
-            python3 ./scamazon/manage.py test ./scamazon/store
-      - store_artifacts:
-          path: test-reports/
-          destination: python_app
+            python3 ./scamazon/manage.py test ./scamazon/store 
+
       - store_test_results:
-          path: test-results/
+          path: test-resul/ts
