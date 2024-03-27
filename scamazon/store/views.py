@@ -84,7 +84,6 @@ def book(request, isbn):
     try:
         book = Book.objects.get(isbn = isbn)
         listings_list = Listing.objects.filter(isbn = isbn).order_by('price')
-        print(listings_list)
     except(ObjectDoesNotExist):
         return render(request, "null_book.html")
     
@@ -97,7 +96,7 @@ def book(request, isbn):
 
 
 @login_required
-def add_cart(request,id):
+def add_cart(request, id):
     listing = get_object_or_404(Listing, id=request.POST.get('id'))
     cart = Cart.objects.filter(userID=request.user.username).values('listingID')
     cartlistings = Listing.objects.filter(id__in=cart)
@@ -109,11 +108,9 @@ def add_cart(request,id):
         return redirect('cart')
 
 @login_required
-def remove_cart(request,id):
+def remove_cart(request, id):
     listing = get_object_or_404(Listing, id=request.POST.get('id'))
-    print(listing)
     cart = Cart.objects.filter(userID=request.user.username).values('listingID')
-    print(cart)
     cartlisting = Listing.objects.filter(id__in=cart)
 
     if listing in cartlisting:
@@ -317,8 +314,6 @@ def increase_cart_quantity(request, id):
     if listing in cartlisting:
         p = Cart.objects.filter(listingID=listing, userID=request.user.username)
         for cartObject in p:
-            print(listing.quantity)
-            print(cartObject.quantity + 1)
             if listing.quantity >= cartObject.quantity + 1:
                 cartObject.quantity += 1
                 cartObject.save()
