@@ -5,6 +5,9 @@ jobs:
       - image: circleci/python:3.9
     steps:
       - checkout
+      -run:
+          name: ls parent
+          command: ls ..
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
       - run:
@@ -25,4 +28,4 @@ jobs:
           path: test-reports/
           destination: python_app
       - store_test_results:
-          path: test-results
+          path: test-results/
