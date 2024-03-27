@@ -20,8 +20,6 @@ jobs:
           name: Running tests
           command: |
             . venv/bin/activate
-	    mkdir test-results
-	    pytest --junitxml=test-results/junit.xml
             python3 ./scamazon/manage.py test ./scamazon/store 
 
       - store_test_results:
