@@ -188,7 +188,6 @@ class ListingTestCase(TestCase):
         self.image_object = Image.objects.create(image = image_file)
         
         Listing.objects.create(
-            listingID = 29874109827,
             isbn = self.book.isbn,
             quantity = 2,
             userID = self.user,
@@ -198,24 +197,18 @@ class ListingTestCase(TestCase):
     def test_listing_created(self):
         listing_count = Listing.objects.all().count() #gets all listings
         
-        #Tests that listing was made
+        #Tests that the listing was made
         self.assertEqual(listing_count, 1)
         
-    def test_listing_fields(self):
-        listing = Listing.objects.get(listingID = 29874109827)
+    def test_listing_fields_filled(self):
+        listing = Listing.objects.get(isbn = self.book.isbn)
         
-        #Tests if data in listing is correct
+        #Tests if data in fields is correct
         self.assertEqual(listing.quantity, 2)
         self.assertEqual(listing.price, 13.67)
         
-    def test_book_title_max_length(self):
-        #Tests if max id length of field is correct
-        listing = Listing.objects.get(listingID = 29874109827)
-        max_length = listing._meta.get_field('listingID').max_length
-        self.assertEqual(max_length, 13)
-        
     def test_listing_required_fields_populated(self):
-        #Test if required fields must be populated    
+        #Test default behavior of model    
         with self.assertRaises(ValueError):
             Listing.objects.create() #all fields are empty
             
@@ -223,13 +216,20 @@ class ListingTestCase(TestCase):
         #Test if input validation is properly handled
         with self.assertRaises(ValueError):
             Listing.objects.create(
-                listingID = 76923478,
                 isbn = self.book.isbn,
                 quantity = 6,
                 userID = self.user,
                 price = -723.99, #invalid price
                 image = self.image_object)
     
-        
+        with self.assertRaises(ValueError):
+            Listing.objects.create(
+                isbn = self.book.isbn,
+                quantity = -1, #invalid quantity
+                userID = self.user,
+                price = 54.32,
+                image = self.image_object)
+            
+            
     
         
