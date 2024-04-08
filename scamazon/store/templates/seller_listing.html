@@ -6,6 +6,10 @@
   <div>{{listing.isbn}}</div>
   <div>Priced at: {{listing.price}}</div>
   <div>Quantity: {{listing.quantity}}</div>
+  <form action="{% url 'edit_listing' listing.id %}" method="GET">
+    {% csrf_token %}
+    <button type="submit", name="listing_id", value="{{ listing.id }}">Edit Listing</button>
+    </form>
   <form action="{% url 'remove_listing' listing.id %}" method="POST">
     {% csrf_token %}
     <button type="submit", name="listing_id", value="{{ listing.id }}">Remove Listing</button>
