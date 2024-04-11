@@ -37,3 +37,17 @@ class Cart(models.Model):
     listingID = models.ForeignKey(Listing, null = True, on_delete=models.CASCADE);
     quantity = models.IntegerField(default=1);
     userID = models.CharField(max_length=20);
+
+class Order(models.Model):
+    date = models.DateField();
+    quantity = models.IntegerField(default=1);
+    book = models.ForeignKey(Book, null = True, on_delete=models.CASCADE);
+    price = models.FloatField(default = 0, validators = [MinValueValidator(0)]);
+    buyer = models.ForeignKey(CustomUser, null = True, on_delete=models.DO_NOTHING, related_name='buyer');
+    seller = models.ForeignKey(CustomUser, null = True, on_delete=models.DO_NOTHING, related_name='seller');
+    delivered = models.BooleanField(default=False);
+    address = models.CharField(max_length=200);
+    payment = models.CharField(max_length=200);
+
+    def get_payment_last_4_digits(self):
+        return self.payment[-4:]
