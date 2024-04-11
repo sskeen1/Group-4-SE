@@ -322,3 +322,34 @@ def increase_cart_quantity(request, id):
         return redirect('cart')
     else:
         return redirect('cart')
+    
+@login_required
+def edit_listing(request, id):
+    
+    listing = get_object_or_404(Listing, id=id)
+
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = ListingForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            listing.quantity=form.cleaned_data['quantity']
+            listing.price=form.cleaned_data['price']
+            listing.image=form.cleaned_data['image']
+            listing.save()
+
+            # redirect to a new URL:
+            return redirect('/seller')
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = ListingForm(initial={'isbn': listing.isbn.isbn, 'quantity': listing.quantity, 'price': listing.price, 'image': listing.image})
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'add_listing.html', context)

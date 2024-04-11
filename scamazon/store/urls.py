@@ -24,5 +24,6 @@ urlpatterns = [
     path("seller/add_listing/<str:isbn>", views.add_listing, name="add_listing"),
     path("seller/add_listing", views.add_listing, name="add_listing"),
     path("seller/add_book", views.add_book, name="add_book"),
-    path("remove_listing/<str:id>", views.remove_listing, name="remove_listing")
+    path("remove_listing/<str:id>", views.remove_listing, name="remove_listing"),
+    path("edit_listing/<str:id>", views.edit_listing, name="edit_listing")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
