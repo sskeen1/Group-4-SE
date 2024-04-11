@@ -10,12 +10,13 @@ class SignUpFormTest(TestCase):
         #form = signupForm()
         #self.assertTrue(form.fields)
 
+
+class CheckoutFormTest(TestCase):
     def test_checkout_input_length(self):
         form = CheckoutForm()
         self.assertTrue(form.fields['cardNum'].max_length==16)
         self.assertTrue(form.fields['CVV'].max_length==3)
 
-class CheckoutFormTest(TestCase):
     def test_checkout_form_fields(self):
         data = {
             "address":"1000 test",

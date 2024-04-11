@@ -526,17 +526,17 @@ class CheckoutViewTest(TestCase):
 
     def test_if_checkout_is_posting(self):
         login = self.client.login(username='testbuyer1', password='group4se')
-        response = self.client.post('/checkout/', {'checkout': True})
+        response = self.client.post('/checkout/', {'checkout': True, 'address': '1234 Example st', 'paymentType': 'Visa', 'cardNum': '1234123412341234', 'CVV': '123', 'Expiration': '12/24'})
         self.assertEqual(response.status_code, 302)
 
     def test_if_checkout_empties_cart(self):
         login = self.client.login(username='testbuyer1', password='group4se')
-        response = self.client.post('/checkout/', {'checkout': True})
+        response = self.client.post('/checkout/', {'checkout': True, 'address': '1234 Example st', 'paymentType': 'Visa', 'cardNum': '1234123412341234', 'CVV': '123', 'Expiration': '12/24'})
         self.assertEqual(Cart.objects.count(), 0)
 
     def test_if_checkout_changes_listings(self):
         login = self.client.login(username='testbuyer1', password='group4se')
-        response = self.client.post('/checkout/', {'checkout': True})
+        response = self.client.post('/checkout/', {'checkout': True, 'address': '1234 Example st', 'paymentType': 'Visa', 'cardNum': '1234123412341234', 'CVV': '123', 'Expiration': '12/24'})
         self.assertEqual(Listing.objects.count(), 1)
 
 class SearchViewTest(TestCase):

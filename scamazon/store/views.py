@@ -136,7 +136,6 @@ def checkout(request):
         form = CheckoutForm(request.POST)
 
         #data would need to be verified and used here once changes to models are implemented
-        #print(form)
 
         if form.is_valid():
             cart = Cart.objects.filter(userID=request.user.username)
