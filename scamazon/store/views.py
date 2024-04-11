@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Book, Listing, Cart
+from .models import Book, Listing, Cart, Order
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import SignupForm, ListingForm, BookForm, CheckoutForm
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
+import datetime
 
 
 def signup(request):
@@ -137,19 +138,38 @@ def checkout(request):
         #data would need to be verified and used here once changes to models are implemented
         #print(form)
 
-        cart = Cart.objects.filter(userID=request.user.username).values('listingID')
-        cartlistings = Listing.objects.filter(id__in=cart)
+        if form.is_valid():
+            cart = Cart.objects.filter(userID=request.user.username)
 
-        for listing in cartlistings:
-            if listing.quantity > 1:
-                listing.quantity -= 1
-                listing.save()
-            else:
-                listing.delete()
+            for item in cart:
+                listing = item.listingID
 
-        Cart.objects.filter(userID=request.user.username).delete()
+                #create an order
+                new_order = Order(
+                    date = datetime.date.today(),
+                    quantity = item.quantity,
+                    book = listing.isbn,
+                    price = listing.price,
+                    buyer = request.user,
+                    seller = listing.userID,
+                    delivered = False,
+                    address = form.cleaned_data['address'],
+                    payment = form.cleaned_data['cardNum']
+                )
+                new_order.save()
 
-        return redirect('cart')
+                #decrease listing amount by the cart items amount
+                if item.quantity < listing.quantity:
+                    listing.quantity -= item.quantity
+                    listing.save()
+                else:
+                    listing.delete()
+
+            Cart.objects.filter(userID=request.user.username).delete()
+
+            return redirect('cart')
+        else:
+            return redirect('cart')
     else:
         form = CheckoutForm()
         return render(request, 'checkout.html', {'form': form})
