@@ -38,6 +38,10 @@
                 {% csrf_token %}
                 <button type="submit">View my Cart</button>
               </form>
+              <form class="mt-10" action="{% url 'buyer_orders' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit">View my Past Orders</button>
+              </form>
               <form id="logout-form" class="mt-10" method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-link">Logout</button>

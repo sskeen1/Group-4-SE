@@ -153,7 +153,8 @@ def checkout(request):
                     seller = listing.userID,
                     delivered = False,
                     address = form.cleaned_data['address'],
-                    payment = form.cleaned_data['cardNum']
+                    payment = form.cleaned_data['cardNum'],
+                    oldListingId = listing.id
                 )
                 new_order.save()
 
@@ -372,3 +373,44 @@ def edit_listing(request, id):
     }
 
     return render(request, 'add_listing.html', context)
+
+@login_required
+def buyer_orders(request):
+    orders_list = Order.objects.filter(buyer=request.user)
+
+    context = {
+        'orders_list': orders_list
+    }
+
+    return render(request, 'buyer_orders.html', context=context)
+
+@login_required
+def return_order(request, id):
+    order = get_object_or_404(Order, id=id)
+
+    #check if the order is already delivered and if it don't let them return it
+    if order.delivered:
+        return redirect('buyer_orders')
+    else:
+        # if the listing still exits
+        try:
+            oldListing = Listing.objects.get(id=order.oldListingId)
+            oldListing.quantity += order.quantity
+            oldListing.save()
+            order.delete()
+        
+        #if the listing doesn't still exist make a new one
+        except Listing.DoesNotExist:
+            returned_listing = Listing(
+                id = order.oldListingId,
+                listingID = 0,
+                isbn = order.book,
+                quantity = order.quantity,
+                userID = order.seller,
+                price = order.price,
+                image = order.oldListingImage
+            )
+            returned_listing.save()
+            order.delete()
+
+        return redirect('buyer_orders')
