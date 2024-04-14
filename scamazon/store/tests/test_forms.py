@@ -10,11 +10,12 @@ class SignUpFormTest(TestCase):
         #form = signupForm()
         #self.assertTrue(form.fields)
 
+
+class CheckoutFormTest(TestCase):
     def test_checkout_input_length(self):
         form = CheckoutForm()
         self.assertTrue(form.fields['cardNum'].max_length==16)
         self.assertTrue(form.fields['CVV'].max_length==3)
-
 
     def test_checkout_form_fields(self):
         data = {
@@ -38,7 +39,7 @@ class SignUpFormTest(TestCase):
         form = CheckoutForm(data)
         self.assertFalse(form.is_valid())
 
-
+class ListingFormTest(TestCase):
     def test_listing_form_input_length(self):
         form = ListingForm()
         self.assertTrue(form.fields['isbn'].max_length==13)
@@ -85,6 +86,7 @@ class SignUpFormTest(TestCase):
         form = ListingForm(data)
         self.assertFalse(form.is_valid())
 
+class BookFormTest(TestCase):
     def test_book_form_input_length(self):
         form = BookForm()
         self.assertTrue(form.fields['isbn'].max_length==13)

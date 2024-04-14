@@ -1,0 +1,29 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+  <h1>Orders</h1>
+
+  <h2>Your Orders: </h2>
+  <br>
+  </ul>
+  {%for order in orders_list %}
+    <h5> Order {{order.id}} from {{order.date}}: </h5>
+    <image src="{{ order.oldListingImage.image.url }}" alt="{{ order.oldListingImage.image.url  }} height="200 width="115" ></image>
+    <li>{{order.quantity}} Copies of "{{order.book}}" for ${{order.price}} each</li>
+    <li>${{order.get_total_payment}} total</li>
+    <li>Shipped to: {{order.address}}</li>
+    <li>Delivered: {{order.delivered}}</li>
+    <li>Paid with card ending in: **** **** **** {{order.get_payment_last_4_digits}}</li>
+    {%if not order.delivered%}
+    <br>
+    <form action="{% url 'return_order' order.id %}" method="POST">
+        {% csrf_token %}
+        <button type="submit", name="id", value="{{ listing.id }}">Return</button>
+    </form>
+    {%else%}
+    {%endif%}
+    <br>
+    <br>
+  {%endfor%}
+  </ul>
+{% endblock %}

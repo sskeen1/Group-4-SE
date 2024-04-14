@@ -1,7 +1,8 @@
 {% extends "base_generic.html" %}
 
 {% block content %}
-<form action="" method="post">
+<form action="" enctype="multipart/form-data" method="post">
+    <div>Enter an existing book's isbn or if it doesn't exist hit submit and you can create a new one!</div>
     {% csrf_token %}
     <table>
     {{ form.as_table }}
