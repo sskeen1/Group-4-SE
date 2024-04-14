@@ -188,7 +188,7 @@ class ListingTestCase(TestCase):
         self.image_object = Image.objects.create(image = image_file)
         
         Listing.objects.create(
-            isbn = self.book.isbn,
+            isbn = self.book,
             quantity = 2,
             userID = self.user,
             price = 13.67,
@@ -216,7 +216,7 @@ class ListingTestCase(TestCase):
         #Test if input validation is properly handled
         with self.assertRaises(ValueError):
             Listing.objects.create(
-                isbn = self.book.isbn,
+                isbn = self.book,
                 quantity = 6,
                 userID = self.user,
                 price = -723.99, #invalid price
@@ -224,7 +224,7 @@ class ListingTestCase(TestCase):
     
         with self.assertRaises(ValueError):
             Listing.objects.create(
-                isbn = self.book.isbn,
+                isbn = self.book,
                 quantity = -1, #invalid quantity
                 userID = self.user,
                 price = 54.32,
