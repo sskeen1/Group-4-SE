@@ -53,10 +53,18 @@ def seller_dashboard(request):
     num_books = Book.objects.all().count()
     listings_list = Listing.objects.filter(userID=request.user.id)
 
+    #notify if a new listing has sold
+    orders_list = Order.objects.filter(seller=request.user)
+    undelivered_count = 0
+    for order in orders_list:
+        if not order.delivered:
+            undelivered_count += 1
+
     context = {
         'num_books': num_books,
         'user_type': request.user.type,
-        'listing_list': listings_list
+        'listing_list': listings_list,
+        'undelivered_count': undelivered_count
     }
 
     return render(request, 'seller_dashboard.html', context=context)
@@ -376,7 +384,7 @@ def edit_listing(request, id):
 
 @login_required
 def buyer_orders(request):
-    orders_list = Order.objects.filter(buyer=request.user)
+    orders_list = Order.objects.filter(buyer=request.user).order_by('delivered')
 
     context = {
         'orders_list': orders_list
@@ -414,3 +422,32 @@ def return_order(request, id):
             order.delete()
 
         return redirect('buyer_orders')
+    
+@login_required
+def seller_orders(request):
+    orders_list = Order.objects.filter(seller=request.user).order_by('delivered')
+
+    total_made = 0
+    for order in orders_list:
+        total_made += order.quantity * order.price
+
+    context = {
+        'orders_list': orders_list,
+        'total_made': round(total_made, 2)
+    }
+
+    return render(request, 'seller_orders.html', context=context)
+
+@login_required
+def deliver_order(request, id):
+    order = get_object_or_404(Order, id=id)
+
+    #check if the order is already delivered and if it don't let them return it
+    if order.delivered:
+        return redirect('seller_orders')
+    else:
+        
+        order.delivered = True
+        order.save()
+
+        return redirect('seller_orders')

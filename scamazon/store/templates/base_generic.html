@@ -48,6 +48,14 @@
               </form>
             </div>
           {% elif  user.is_authenticated and user.type == "Seller"%}
+          <form class="mt-10" action="{% url 'seller_dashboard' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">View my Current Listings</button>
+          </form>
+          <form class="mt-10" action="{% url 'seller_orders' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit">View my Sold Listings</button>
+          </form>
           <form id="logout-form" method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button type="submit" class="btn btn-link">Logout</button>
