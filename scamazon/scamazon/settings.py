@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Yeah... i didn't set up the env variables for this but we can later if we need to
 SECRET_KEY = '1234567890'
 
-# BE CAREFUL HERE... turn this to false when deploying
-DEBUG = True
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -121,7 +121,7 @@ USE_TZ = True
 
 
 # BE CAREFUL HERE... uncomment the below line out if deploying
-STATIC_ROOT = BASE_DIR # / 'staticfiles'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 STATIC_URL = 'static/'
 
@@ -153,3 +153,5 @@ if 'DATABASE_URL' in os.environ:
         conn_max_age=500,
         conn_health_checks=True,
     )
+
+CSRF_TRUSTED_ORIGINS = ['http://reesesorrell1.pythonanywhere.com/', 'https://reesesorrell1.pythonanywhere.com/']
