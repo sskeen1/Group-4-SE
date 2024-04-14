@@ -1,5 +1,5 @@
 from django.test import TestCase
-from ..models import CustomUser, Book, Image, Listing, Cart
+from store.models import CustomUser, Book, Image, Listing, Cart
 from django.db import IntegrityError, DataError
 from django.core.files.uploadedfile import SimpleUploadedFile
 
