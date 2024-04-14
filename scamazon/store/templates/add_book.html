@@ -2,6 +2,7 @@
 
 {% block content %}
 <form action="" method="post">
+    <div>The isbn didn't exist so add the book yourself!</div>
     {% csrf_token %}
     <table>
     {{ form.as_table }}
