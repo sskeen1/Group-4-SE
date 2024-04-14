@@ -147,7 +147,7 @@ class CustomUserTestCase(TestCase):
 class ImageTestCase(TestCase):
     def test_image_upload(self):
         #Provide the path test image file
-        image_file_path = 'store/tests/test_image.jpg'
+        image_file_path = 'scamazon/store/tests/test_image.jpg'
         
         # Open and read the image file
         with open(image_file_path, 'rb') as f:
@@ -178,7 +178,7 @@ class ListingTestCase(TestCase):
             password = 'password',
             type = 'Buyer')
         
-        image_file_path = 'store/tests/test_image.jpg'
+        image_file_path = 'scamazon/store/tests/test_image.jpg'
         
         with open(image_file_path, 'rb') as f:
             image_data = f.read()
