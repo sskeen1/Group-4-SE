@@ -160,7 +160,7 @@ class ImageTestCase(TestCase):
         image_object = Image.objects.create(image = image_file)
 
         #Test if image is stored properly
-        self.assertTrue(image_object.image.name.startswith("uploads/test_image"))
+        self.assertTrue(image_object.image.name.startswith("test_image"))
         
 class ListingTestCase(TestCase):
     def setUp(self):
