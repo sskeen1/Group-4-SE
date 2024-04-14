@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Book, Listing, Cart, Order
+from .models import Book, Listing, Cart, Order, Image
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import SignupForm, ListingForm, BookForm, CheckoutForm
@@ -162,7 +162,8 @@ def checkout(request):
                     delivered = False,
                     address = form.cleaned_data['address'],
                     payment = form.cleaned_data['cardNum'],
-                    oldListingId = listing.id
+                    oldListingId = listing.id,
+                    oldListingImage = listing.image
                 )
                 new_order.save()
 
@@ -238,7 +239,7 @@ def add_listing(request, isbn=''):
     if request.method == 'POST':
 
         # Create a form instance and populate it with data from the request (binding):
-        form = ListingForm(request.POST)
+        form = ListingForm(request.POST, request.FILES)
 
         # Check if the form is valid:
         if form.is_valid():
@@ -247,13 +248,18 @@ def add_listing(request, isbn=''):
             #book already exists
             if (Book.objects.filter(isbn=form.cleaned_data['isbn'])):
                 book = Book.objects.filter(isbn=form.cleaned_data['isbn'])[0]
+                print(form.cleaned_data.get('image'))
+                new_image = Image(
+                    image=form.cleaned_data.get('image')
+                )
+                new_image.save()
                 new_listing = Listing(
                     listingID = 0,
                     isbn = book,
                     quantity=form.cleaned_data['quantity'],
                     price=form.cleaned_data['price'],
                     userID=request.user,
-                    image=form.cleaned_data['image']
+                    image=new_image
                 )
                 new_listing.save()
             else:

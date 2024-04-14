@@ -13,6 +13,7 @@
   </ul>
   {%for order in orders_list %}
     <h5> {{order.date}} by {{order.buyer.username}}:</h5>
+    <image src="{{ order.oldListingImage.image.url }}" alt="{{ order.oldListingImage.image.url  }} height="200 width="115" ></image>
     <li>{{order.quantity}} Copies of "{{order.book}}" for ${{order.price}} each</li>
     <li>${{order.get_total_payment}} total</li>
     <li>Ship to: {{order.address}}</li>
