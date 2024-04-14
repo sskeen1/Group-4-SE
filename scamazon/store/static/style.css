@@ -220,3 +220,7 @@ a {
 .book-title {
   font-size: x-large;
 }
+
+.notification {
+  color: yellow;
+}

@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Book, Listing, Cart
+from .models import Book, Listing, Cart, Order, Image
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import SignupForm, ListingForm, BookForm, CheckoutForm
 from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
+import datetime
 
 
 def signup(request):
@@ -52,10 +53,18 @@ def seller_dashboard(request):
     num_books = Book.objects.all().count()
     listings_list = Listing.objects.filter(userID=request.user.id)
 
+    #notify if a new listing has sold
+    orders_list = Order.objects.filter(seller=request.user)
+    undelivered_count = 0
+    for order in orders_list:
+        if not order.delivered:
+            undelivered_count += 1
+
     context = {
         'num_books': num_books,
         'user_type': request.user.type,
-        'listing_list': listings_list
+        'listing_list': listings_list,
+        'undelivered_count': undelivered_count
     }
 
     return render(request, 'seller_dashboard.html', context=context)
@@ -84,7 +93,6 @@ def book(request, isbn):
     try:
         book = Book.objects.get(isbn = isbn)
         listings_list = Listing.objects.filter(isbn = isbn).order_by('price')
-        print(listings_list)
     except(ObjectDoesNotExist):
         return render(request, "null_book.html")
     
@@ -97,7 +105,7 @@ def book(request, isbn):
 
 
 @login_required
-def add_cart(request,id):
+def add_cart(request, id):
     listing = get_object_or_404(Listing, id=request.POST.get('id'))
     cart = Cart.objects.filter(userID=request.user.username).values('listingID')
     cartlistings = Listing.objects.filter(id__in=cart)
@@ -109,11 +117,9 @@ def add_cart(request,id):
         return redirect('cart')
 
 @login_required
-def remove_cart(request,id):
+def remove_cart(request, id):
     listing = get_object_or_404(Listing, id=request.POST.get('id'))
-    print(listing)
     cart = Cart.objects.filter(userID=request.user.username).values('listingID')
-    print(cart)
     cartlisting = Listing.objects.filter(id__in=cart)
 
     if listing in cartlisting:
@@ -138,21 +144,41 @@ def checkout(request):
         form = CheckoutForm(request.POST)
 
         #data would need to be verified and used here once changes to models are implemented
-        #print(form)
 
-        cart = Cart.objects.filter(userID=request.user.username).values('listingID')
-        cartlistings = Listing.objects.filter(id__in=cart)
+        if form.is_valid():
+            cart = Cart.objects.filter(userID=request.user.username)
 
-        for listing in cartlistings:
-            if listing.quantity > 1:
-                listing.quantity -= 1
-                listing.save()
-            else:
-                listing.delete()
+            for item in cart:
+                listing = item.listingID
 
-        Cart.objects.filter(userID=request.user.username).delete()
+                #create an order
+                new_order = Order(
+                    date = datetime.date.today(),
+                    quantity = item.quantity,
+                    book = listing.isbn,
+                    price = listing.price,
+                    buyer = request.user,
+                    seller = listing.userID,
+                    delivered = False,
+                    address = form.cleaned_data['address'],
+                    payment = form.cleaned_data['cardNum'],
+                    oldListingId = listing.id,
+                    oldListingImage = listing.image
+                )
+                new_order.save()
 
-        return redirect('cart')
+                #decrease listing amount by the cart items amount
+                if item.quantity < listing.quantity:
+                    listing.quantity -= item.quantity
+                    listing.save()
+                else:
+                    listing.delete()
+
+            Cart.objects.filter(userID=request.user.username).delete()
+
+            return redirect('cart')
+        else:
+            return redirect('cart')
     else:
         form = CheckoutForm()
         return render(request, 'checkout.html', {'form': form})
@@ -213,7 +239,7 @@ def add_listing(request, isbn=''):
     if request.method == 'POST':
 
         # Create a form instance and populate it with data from the request (binding):
-        form = ListingForm(request.POST)
+        form = ListingForm(request.POST, request.FILES)
 
         # Check if the form is valid:
         if form.is_valid():
@@ -222,13 +248,18 @@ def add_listing(request, isbn=''):
             #book already exists
             if (Book.objects.filter(isbn=form.cleaned_data['isbn'])):
                 book = Book.objects.filter(isbn=form.cleaned_data['isbn'])[0]
+                print(form.cleaned_data.get('image'))
+                new_image = Image(
+                    image=form.cleaned_data.get('image')
+                )
+                new_image.save()
                 new_listing = Listing(
                     listingID = 0,
                     isbn = book,
                     quantity=form.cleaned_data['quantity'],
                     price=form.cleaned_data['price'],
                     userID=request.user,
-                    image=form.cleaned_data['image']
+                    image=new_image
                 )
                 new_listing.save()
             else:
@@ -317,8 +348,6 @@ def increase_cart_quantity(request, id):
     if listing in cartlisting:
         p = Cart.objects.filter(listingID=listing, userID=request.user.username)
         for cartObject in p:
-            print(listing.quantity)
-            print(cartObject.quantity + 1)
             if listing.quantity >= cartObject.quantity + 1:
                 cartObject.quantity += 1
                 cartObject.save()
@@ -327,3 +356,104 @@ def increase_cart_quantity(request, id):
         return redirect('cart')
     else:
         return redirect('cart')
+    
+@login_required
+def edit_listing(request, id):
+    
+    listing = get_object_or_404(Listing, id=id)
+
+    # If this is a POST request then process the Form data
+    if request.method == 'POST':
+
+        # Create a form instance and populate it with data from the request (binding):
+        form = ListingForm(request.POST)
+
+        # Check if the form is valid:
+        if form.is_valid():
+            listing.quantity=form.cleaned_data['quantity']
+            listing.price=form.cleaned_data['price']
+            listing.image=form.cleaned_data['image']
+            listing.save()
+
+            # redirect to a new URL:
+            return redirect('/seller')
+
+    # If this is a GET (or any other method) create the default form.
+    else:
+        form = ListingForm(initial={'isbn': listing.isbn.isbn, 'quantity': listing.quantity, 'price': listing.price, 'image': listing.image})
+
+    context = {
+        'form': form,
+    }
+
+    return render(request, 'add_listing.html', context)
+
+@login_required
+def buyer_orders(request):
+    orders_list = Order.objects.filter(buyer=request.user).order_by('delivered')
+
+    context = {
+        'orders_list': orders_list
+    }
+
+    return render(request, 'buyer_orders.html', context=context)
+
+@login_required
+def return_order(request, id):
+    order = get_object_or_404(Order, id=id)
+
+    #check if the order is already delivered and if it don't let them return it
+    if order.delivered:
+        return redirect('buyer_orders')
+    else:
+        # if the listing still exits
+        try:
+            oldListing = Listing.objects.get(id=order.oldListingId)
+            oldListing.quantity += order.quantity
+            oldListing.save()
+            order.delete()
+        
+        #if the listing doesn't still exist make a new one
+        except Listing.DoesNotExist:
+            returned_listing = Listing(
+                id = order.oldListingId,
+                listingID = 0,
+                isbn = order.book,
+                quantity = order.quantity,
+                userID = order.seller,
+                price = order.price,
+                image = order.oldListingImage
+            )
+            returned_listing.save()
+            order.delete()
+
+        return redirect('buyer_orders')
+    
+@login_required
+def seller_orders(request):
+    orders_list = Order.objects.filter(seller=request.user).order_by('delivered')
+
+    total_made = 0
+    for order in orders_list:
+        total_made += order.quantity * order.price
+
+    context = {
+        'orders_list': orders_list,
+        'total_made': round(total_made, 2)
+    }
+
+    return render(request, 'seller_orders.html', context=context)
+
+@login_required
+def deliver_order(request, id):
+    order = get_object_or_404(Order, id=id)
+
+    #check if the order is already delivered and if it don't let them return it
+    if order.delivered:
+        return redirect('seller_orders')
+    else:
+        
+        order.delivered = True
+        order.save()
+
+        return redirect('seller_orders')

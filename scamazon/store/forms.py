@@ -25,7 +25,7 @@ class CheckoutForm(forms.Form):
     paymentType = forms.ChoiceField(choices=paytypes)
     cardNum = forms.CharField(max_length=16)
     CVV = forms.CharField(max_length=3)
-    Expiration = forms.DateField()
+    Expiration = forms.CharField(max_length=12)
     
 class ListingForm(forms.Form):
     isbn = forms.CharField(max_length=13)
