@@ -93,7 +93,7 @@ class BookValidationTestCase(TestCase):
     
     def test_required_fields_populated(self):
         #Test if required fields must be populated    
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IntegrityError):
             Book.objects.create() #all fields are empty
             
     def test_fields_invalid_values(self):
@@ -209,7 +209,7 @@ class ListingTestCase(TestCase):
         
     def test_listing_required_fields_populated(self):
         #Test default behavior of model    
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IntegrityError):
             Listing.objects.create() #all fields are empty
             
     def test_listing_fields_invalid_values(self):
@@ -287,7 +287,7 @@ class CartTestCase(TestCase):
         self.assertEqual(cart_count, 1)
         
     def test_cart_fields_filled(self):
-        cart = Cart.objects.get(listingID = self.listing2)
+        cart = Cart.objects.get(listingID = self.listing1)
         
         #Tests if data in fields is correct
         self.assertEqual(cart.quantity, 3)
@@ -303,7 +303,7 @@ class CartTestCase(TestCase):
         
     def test_cart_required_fields_populated(self):
         #Test default behavior of model    
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IntegrityError):
             Cart.objects.create() #all fields are empty
         
     def test_cart_invalid_field(self):
@@ -363,7 +363,7 @@ class OrderTestCase(TestCase):
             seller = self.seller,
             delivered = False,
             address = '123 Totally Real St',
-            payment = 8291473089473064)
+            payment = '8291473089473064')
         
     def test_order_created(self):
         order_count = Order.objects.all().count() #gets all order objects
@@ -388,7 +388,7 @@ class OrderTestCase(TestCase):
         
     def test_order_required_fields_populated(self):
         #Test default behavior of model    
-        with self.assertRaises(ValueError):
+        with self.assertRaises(IntegrityError):
             Order.objects.create() #all fields are empty
             
     def test_order_fields_invalid(self):
@@ -405,7 +405,7 @@ class OrderTestCase(TestCase):
             seller = self.seller,
             delivered = False,
             address = '123 Totally Real St',
-            payment = 3 #invalid payment credentials
+            payment = '3' #invalid payment credentials
             )
             
         with self.assertRaises(ValueError):
@@ -420,7 +420,7 @@ class OrderTestCase(TestCase):
             seller = self.seller,
             delivered = False,
             address = '123 Totally Real St',
-            payment = 8291473089473064)
+            payment = '8291473089473064')
             
         with self.assertRaises(ValueError):
             Order.objects.create(
@@ -434,4 +434,4 @@ class OrderTestCase(TestCase):
             seller = self.seller,
             delivered = False,
             address = '123 Totally Real St',
-            payment = 8291473089473064)
+            payment = '8291473089473064')
