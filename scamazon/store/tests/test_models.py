@@ -287,7 +287,7 @@ class CartTestCase(TestCase):
         self.assertEqual(cart_count, 1)
         
     def test_cart_fields_filled(self):
-        cart = Cart.objects.get(isbn = self.listing1.isbn)
+        cart = Cart.objects.get(listingID = self.listing2)
         
         #Tests if data in fields is correct
         self.assertEqual(cart.quantity, 3)
@@ -298,7 +298,7 @@ class CartTestCase(TestCase):
             userID = self.buyer)
         
         #Tests default case of quantity field
-        cart = Cart.objects.get(isbn = self.listing2.isbn)
+        cart = Cart.objects.get(listingID = self.listing2)
         self.assertEqual(cart.quantity, 1)
         
     def test_cart_required_fields_populated(self):
@@ -353,7 +353,7 @@ class OrderTestCase(TestCase):
             image = self.image_object)
         
         self.order = Order.objects.create(
-            date = 2024-4-16,
+            date = '2024-4-16',
             oldListingId = 8927091,
             oldListingImage = self.image_object,
             quantity = 2,
@@ -373,7 +373,7 @@ class OrderTestCase(TestCase):
     
     def test_order_values(self):
         #Tests if field data is correct
-        self.assertEqual(self.order.date, 2024-4-16)
+        self.assertEqual(self.order.date, '2024-4-16')
         self.assertEqual(self.order.quantity, 2)
         self.assertEqual(self.order.price, self.listing.price)
         self.assertEqual(self.order.address, '123 Totally Real St')
@@ -395,7 +395,7 @@ class OrderTestCase(TestCase):
         #Tests if input validation is handled properly
         with self.assertRaises(ValueError):
             Order.objects.create(
-            date = 2024-4-16,
+            date = '2024-4-16',
             oldListingId = 8927091,
             oldListingImage = self.image_object,
             quantity = 2,
@@ -410,7 +410,7 @@ class OrderTestCase(TestCase):
             
         with self.assertRaises(ValueError):
             Order.objects.create(
-            date = 2024-4-16,
+            date = '2024-4-16',
             oldListingId = 8927091,
             oldListingImage = self.image_object,
             quantity = -97, #invalid quantity
@@ -424,7 +424,7 @@ class OrderTestCase(TestCase):
             
         with self.assertRaises(ValueError):
             Order.objects.create(
-            date = 2024-4-16,
+            date = '2024-4-16',
             oldListingId = 8927091,
             oldListingImage = self.image_object,
             quantity = 1,
