@@ -3,7 +3,6 @@ from .models import Book, Listing, Cart, Order, Image
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import SignupForm, ListingForm, BookForm, CheckoutForm
-from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 
