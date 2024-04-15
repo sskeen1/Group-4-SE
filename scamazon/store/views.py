@@ -3,7 +3,6 @@ from .models import Book, Listing, Cart, Order, Image
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .forms import SignupForm, ListingForm, BookForm, CheckoutForm
-from django.contrib.auth.models import Group
 from django.core.exceptions import ObjectDoesNotExist
 import datetime
 
@@ -248,20 +247,29 @@ def add_listing(request, isbn=''):
             #book already exists
             if (Book.objects.filter(isbn=form.cleaned_data['isbn'])):
                 book = Book.objects.filter(isbn=form.cleaned_data['isbn'])[0]
-                print(form.cleaned_data.get('image'))
-                new_image = Image(
-                    image=form.cleaned_data.get('image')
-                )
-                new_image.save()
-                new_listing = Listing(
-                    listingID = 0,
-                    isbn = book,
-                    quantity=form.cleaned_data['quantity'],
-                    price=form.cleaned_data['price'],
-                    userID=request.user,
-                    image=new_image
-                )
-                new_listing.save()
+                if form.cleaned_data.get('image'):
+                    new_image = Image(
+                        image=form.cleaned_data.get('image')
+                    )
+                    new_image.save()
+                    new_listing = Listing(
+                        listingID = 0,
+                        isbn = book,
+                        quantity=form.cleaned_data['quantity'],
+                        price=form.cleaned_data['price'],
+                        userID=request.user,
+                        image=new_image
+                    )
+                    new_listing.save()
+                else:
+                    new_listing = Listing(
+                        listingID = 0,
+                        isbn = book,
+                        quantity=form.cleaned_data['quantity'],
+                        price=form.cleaned_data['price'],
+                        userID=request.user,
+                    )
+                    new_listing.save()
             else:
                 return redirect('/seller/add_book')
 
