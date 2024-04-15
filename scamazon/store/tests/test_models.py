@@ -381,7 +381,7 @@ class OrderTestCase(TestCase):
         
     def test_order_get_payment_digits(self):
         #Tests if get_payment_last_4_digits() functions properly
-        self.assertEqual(self.order.get_payment_last_4_digits(), 3064)
+        self.assertEqual(self.order.get_payment_last_4_digits(), '3064')
     
     def test_order_get_total_payment(self):
         #Tests if get_total_payment() functions properly
