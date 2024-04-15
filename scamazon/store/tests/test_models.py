@@ -1,7 +1,6 @@
 from django.test import TestCase
 from store.models import CustomUser, Book, Image, Listing, Cart, Order
-from django.db import IntegrityError, DataError
-from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 class BookTestCase(TestCase):
