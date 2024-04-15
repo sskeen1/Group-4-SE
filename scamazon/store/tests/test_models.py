@@ -1,5 +1,5 @@
 from django.test import TestCase
-from store.models import CustomUser, Book, Image, Listing, Cart
+from store.models import CustomUser, Book, Image, Listing, Cart, Order
 from django.db import IntegrityError, DataError
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -230,6 +230,208 @@ class ListingTestCase(TestCase):
                 price = 54.32,
                 image = self.image_object)
             
-            
-    
+class CartTestCase(TestCase):
+    def setUp(self):
+        self.book = Book.objects.create(
+            title = "Gadsby",
+            author = "Ernest Wright",
+            isbn = 9781466216730,
+            pages = 260,
+            rating = 4.2,
+            description = "A story of over 50,000 words without using the letter 'E'")
         
+        self.buyer = CustomUser.objects.create_user(
+            username = 'testbuy',
+            email = 'test@example.com',
+            password = 'password',
+            type = 'Buyer')
+        
+        self.seller = CustomUser.objects.create_user(
+            username = 'testsell',
+            email = 'test@example.com',
+            password = 'password',
+            type = 'Seller')
+        
+        image_file_path = 'scamazon/store/tests/test_image.jpg'
+        
+        with open(image_file_path, 'rb') as f:
+            image_data = f.read()
+        
+        image_file = SimpleUploadedFile("test_image.jpg", image_data, content_type = "image/jpeg")
+
+        self.image_object = Image.objects.create(image = image_file)
+        
+        self.listing1 = Listing.objects.create(
+            isbn = self.book,
+            quantity = 30,
+            userID = self.seller,
+            price = 13.67,
+            image = self.image_object)
+        
+        self.listing2 = Listing.objects.create(
+            isbn = self.book,
+            quantity = 3,
+            userID = self.seller,
+            price = 4.24,
+            image = self.image_object)
+        
+        Cart.objects.create(
+            listingID = self.listing1,
+            quantity = 3,
+            userID = self.buyer)
+    
+    def test_cart_created(self):
+        cart_count = Cart.objects.all().count() #gets all cart objects
+        
+        #Tests that the object was made
+        self.assertEqual(cart_count, 1)
+        
+    def test_cart_fields_filled(self):
+        cart = Cart.objects.get(isbn = self.listing1.isbn)
+        
+        #Tests if data in fields is correct
+        self.assertEqual(cart.quantity, 3)
+        
+    def test_cart_default_case(self):
+        Cart.objects.create(
+            listingID = self.listing2,
+            userID = self.buyer)
+        
+        #Tests default case of quantity field
+        cart = Cart.objects.get(isbn = self.listing2.isbn)
+        self.assertEqual(cart.quantity, 1)
+        
+    def test_cart_required_fields_populated(self):
+        #Test default behavior of model    
+        with self.assertRaises(ValueError):
+            Cart.objects.create() #all fields are empty
+        
+    def test_cart_invalid_field(self):
+        #Tests if input validation is handled properly
+        with self.assertRaises(ValueError):
+            Cart.objects.create(
+                listingID = self.listing1,
+                quantity = -6, #invalid quantity
+                userID = self.buyer)
+
+class OrderTestCase(TestCase):
+    def setUp(self):
+        self.book = Book.objects.create(
+            title = "Gadsby",
+            author = "Ernest Wright",
+            isbn = 9781466216730,
+            pages = 260,
+            rating = 4.2,
+            description = "A story of over 50,000 words without using the letter 'E'")
+        
+        self.buyer = CustomUser.objects.create_user(
+            username = 'testbuy',
+            email = 'test@example.com',
+            password = 'password',
+            type = 'Buyer')
+        
+        self.seller = CustomUser.objects.create_user(
+            username = 'testsell',
+            email = 'test@example.com',
+            password = 'password',
+            type = 'Seller')
+        
+        image_file_path = 'scamazon/store/tests/test_image.jpg'
+        
+        with open(image_file_path, 'rb') as f:
+            image_data = f.read()
+        
+        image_file = SimpleUploadedFile("test_image.jpg", image_data, content_type = "image/jpeg")
+
+        self.image_object = Image.objects.create(image = image_file)
+        
+        self.listing = Listing.objects.create(
+            isbn = self.book,
+            quantity = 54,
+            userID = self.seller,
+            price = 2.34,
+            image = self.image_object)
+        
+        self.order = Order.objects.create(
+            date = 2024-4-16,
+            oldListingId = 8927091,
+            oldListingImage = self.image_object,
+            quantity = 2,
+            book = self.book,
+            price = self.listing.price,
+            buyer = self.buyer,
+            seller = self.seller,
+            delivered = False,
+            address = '123 Totally Real St',
+            payment = 8291473089473064)
+        
+    def test_order_created(self):
+        order_count = Order.objects.all().count() #gets all order objects
+        
+        #Tests if the order was made
+        self.assertEqual(order_count, 1)
+    
+    def test_order_values(self):
+        #Tests if field data is correct
+        self.assertEqual(self.order.date, 2024-4-16)
+        self.assertEqual(self.order.quantity, 2)
+        self.assertEqual(self.order.price, self.listing.price)
+        self.assertEqual(self.order.address, '123 Totally Real St')
+        
+    def test_order_get_payment_digits(self):
+        #Tests if get_payment_last_4_digits() functions properly
+        self.assertEqual(self.order.get_payment_last_4_digits(), 3064)
+    
+    def test_order_get_total_payment(self):
+        #Tests if get_total_payment() functions properly
+        self.assertEqual(self.order.get_total_payment(), 4.68)
+        
+    def test_order_required_fields_populated(self):
+        #Test default behavior of model    
+        with self.assertRaises(ValueError):
+            Order.objects.create() #all fields are empty
+            
+    def test_order_fields_invalid(self):
+        #Tests if input validation is handled properly
+        with self.assertRaises(ValueError):
+            Order.objects.create(
+            date = 2024-4-16,
+            oldListingId = 8927091,
+            oldListingImage = self.image_object,
+            quantity = 2,
+            book = self.book,
+            price = 14.99,
+            buyer = self.buyer,
+            seller = self.seller,
+            delivered = False,
+            address = '123 Totally Real St',
+            payment = 3 #invalid payment credentials
+            )
+            
+        with self.assertRaises(ValueError):
+            Order.objects.create(
+            date = 2024-4-16,
+            oldListingId = 8927091,
+            oldListingImage = self.image_object,
+            quantity = -97, #invalid quantity
+            book = self.book,
+            price = 14.99,
+            buyer = self.buyer,
+            seller = self.seller,
+            delivered = False,
+            address = '123 Totally Real St',
+            payment = 8291473089473064)
+            
+        with self.assertRaises(ValueError):
+            Order.objects.create(
+            date = 2024-4-16,
+            oldListingId = 8927091,
+            oldListingImage = self.image_object,
+            quantity = 1,
+            book = self.book,
+            price = -3, #invalid price
+            buyer = self.buyer,
+            seller = self.seller,
+            delivered = False,
+            address = '123 Totally Real St',
+            payment = 8291473089473064)
