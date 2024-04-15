@@ -8,7 +8,7 @@ class CustomUser(AbstractUser):
 class Book(models.Model):
     title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
-    isbn = models.CharField(max_length=13, blank = False, primary_key=True)
+    isbn = models.CharField(max_length=13, null=False, primary_key=True)
     pages = models.IntegerField(default=0, validators = [MinValueValidator(0)])
     rating = models.FloatField(default=0, validators = [MinValueValidator(0), MaxValueValidator(5.0)])
     description = models.CharField(default = None, blank = True, null = True, max_length = 1500)
