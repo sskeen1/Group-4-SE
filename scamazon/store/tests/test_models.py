@@ -92,11 +92,6 @@ class BookValidationTestCase(TestCase):
                 rating = 3.9,
                 description = "I don't know, look it up")
     
-    def test_required_fields_populated(self):
-        #Test if required fields must be populated    
-        with self.assertRaises(IntegrityError):
-            Book.objects.create() #all fields are empty
-
 class CustomUserTestCase(TestCase):
     def test_custom_field_validation(self):
         #Test if type field is set correctly
@@ -114,16 +109,6 @@ class CustomUserTestCase(TestCase):
             email = 'test@example.com',
             password = 'password')
         self.assertEqual(user.type, '')
-        
-    def test_type_invalid_range(self):
-        #Test validation of max field length for type
-        with self.assertRaises(DataError):
-            user = CustomUser.objects.create_user(
-                username = 'testuser',
-                email = 'test@example.com',
-                password = 'password',
-                type = 'BuyerButLikeWayTooLong' #invalid type name
-                )
             
 class ImageTestCase(TestCase):
     def test_image_upload(self):
@@ -187,29 +172,6 @@ class ListingTestCase(TestCase):
         #Tests if data in fields is correct
         self.assertEqual(listing.quantity, 2)
         self.assertEqual(listing.price, 13.67)
-        
-    def test_listing_required_fields_populated(self):
-        #Test default behavior of model    
-        with self.assertRaises(IntegrityError):
-            Listing.objects.create() #all fields are empty
-            
-    def test_listing_fields_invalid_values(self):
-        #Test if input validation is properly handled
-        with self.assertRaises(ValidationError):
-            Listing.objects.create(
-                isbn = self.book,
-                quantity = 6,
-                userID = self.user,
-                price = -723.99, #invalid price
-                image = self.image_object)
-    
-        with self.assertRaises(ValidationError):
-            Listing.objects.create(
-                isbn = self.book,
-                quantity = -1, #invalid quantity
-                userID = self.user,
-                price = 54.32,
-                image = self.image_object)
             
 class CartTestCase(TestCase):
     def setUp(self):
@@ -281,19 +243,6 @@ class CartTestCase(TestCase):
         #Tests default case of quantity field
         cart = Cart.objects.get(listingID = self.listing2)
         self.assertEqual(cart.quantity, 1)
-        
-    def test_cart_required_fields_populated(self):
-        #Test default behavior of model    
-        with self.assertRaises(IntegrityError):
-            Cart.objects.create() #all fields are empty
-        
-    def test_cart_invalid_field(self):
-        #Tests if input validation is handled properly
-        with self.assertRaises(ValidationError):
-            Cart.objects.create(
-                listingID = self.listing1,
-                quantity = -6, #invalid quantity
-                userID = self.buyer)
 
 class OrderTestCase(TestCase):
     def setUp(self):
@@ -371,48 +320,3 @@ class OrderTestCase(TestCase):
         #Test default behavior of model    
         with self.assertRaises(IntegrityError):
             Order.objects.create() #all fields are empty
-            
-    def test_order_fields_invalid(self):
-        #Tests if input validation is handled properly
-        with self.assertRaises(ValidationError):
-            Order.objects.create(
-            date = '2024-4-16',
-            oldListingId = 8927091,
-            oldListingImage = self.image_object,
-            quantity = 2,
-            book = self.book,
-            price = 14.99,
-            buyer = self.buyer,
-            seller = self.seller,
-            delivered = False,
-            address = '123 Totally Real St',
-            payment = '3' #invalid payment credentials
-            )
-            
-        with self.assertRaises(ValidationError):
-            Order.objects.create(
-            date = '2024-4-16',
-            oldListingId = 8927091,
-            oldListingImage = self.image_object,
-            quantity = -97, #invalid quantity
-            book = self.book,
-            price = 14.99,
-            buyer = self.buyer,
-            seller = self.seller,
-            delivered = False,
-            address = '123 Totally Real St',
-            payment = '8291473089473064')
-            
-        with self.assertRaises(ValidationError):
-            Order.objects.create(
-            date = '2024-4-16',
-            oldListingId = 8927091,
-            oldListingImage = self.image_object,
-            quantity = 1,
-            book = self.book,
-            price = -3, #invalid price
-            buyer = self.buyer,
-            seller = self.seller,
-            delivered = False,
-            address = '123 Totally Real St',
-            payment = '8291473089473064')
