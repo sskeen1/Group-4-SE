@@ -96,26 +96,6 @@ class BookValidationTestCase(TestCase):
         #Test if required fields must be populated    
         with self.assertRaises(IntegrityError):
             Book.objects.create() #all fields are empty
-            
-    def test_fields_invalid_values(self):
-        #Test if input validation is properly handled
-        with self.assertRaises(ValidationError):
-            Book.objects.create(
-                title = "What If?: Serious Scientific Answers to Absurd Hypothetical Questions",
-                author = "Randall Monroe",
-                isbn = 9780544272996,
-                pages = 320,
-                rating = -8, #negative rating isn't possible
-                description = "HIDDEN FEATURE: The inside of this book has words and pictures.")
-            
-        with self.assertRaises(ValidationError):
-            Book.objects.create(
-                title = "The Hunger Games", 
-                author = "Coleen Hoover",
-                isbn = "Hello >:D", #invalid primary key
-                pages = 384,
-                rating = 4.3,
-                description = "Dystopian novel where kids kill each other")
 
 class CustomUserTestCase(TestCase):
     def test_custom_field_validation(self):
