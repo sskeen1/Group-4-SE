@@ -1,6 +1,7 @@
 from django.test import TestCase
 from store.models import CustomUser, Book, Image, Listing, Cart, Order
 from django.db import IntegrityError, DataError
+from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 class BookTestCase(TestCase):
@@ -98,7 +99,7 @@ class BookValidationTestCase(TestCase):
             
     def test_fields_invalid_values(self):
         #Test if input validation is properly handled
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Book.objects.create(
                 title = "What If?: Serious Scientific Answers to Absurd Hypothetical Questions",
                 author = "Randall Monroe",
@@ -107,7 +108,7 @@ class BookValidationTestCase(TestCase):
                 rating = -8, #negative rating isn't possible
                 description = "HIDDEN FEATURE: The inside of this book has words and pictures.")
             
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Book.objects.create(
                 title = "The Hunger Games", 
                 author = "Coleen Hoover",
@@ -214,7 +215,7 @@ class ListingTestCase(TestCase):
             
     def test_listing_fields_invalid_values(self):
         #Test if input validation is properly handled
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Listing.objects.create(
                 isbn = self.book,
                 quantity = 6,
@@ -222,7 +223,7 @@ class ListingTestCase(TestCase):
                 price = -723.99, #invalid price
                 image = self.image_object)
     
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Listing.objects.create(
                 isbn = self.book,
                 quantity = -1, #invalid quantity
@@ -308,7 +309,7 @@ class CartTestCase(TestCase):
         
     def test_cart_invalid_field(self):
         #Tests if input validation is handled properly
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Cart.objects.create(
                 listingID = self.listing1,
                 quantity = -6, #invalid quantity
@@ -393,7 +394,7 @@ class OrderTestCase(TestCase):
             
     def test_order_fields_invalid(self):
         #Tests if input validation is handled properly
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Order.objects.create(
             date = '2024-4-16',
             oldListingId = 8927091,
@@ -408,7 +409,7 @@ class OrderTestCase(TestCase):
             payment = '3' #invalid payment credentials
             )
             
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Order.objects.create(
             date = '2024-4-16',
             oldListingId = 8927091,
@@ -422,7 +423,7 @@ class OrderTestCase(TestCase):
             address = '123 Totally Real St',
             payment = '8291473089473064')
             
-        with self.assertRaises(ValueError):
+        with self.assertRaises(ValidationError):
             Order.objects.create(
             date = '2024-4-16',
             oldListingId = 8927091,
