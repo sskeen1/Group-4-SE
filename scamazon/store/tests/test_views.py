@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from store.models import Book, Listing, Cart, CustomUser
-from store.forms import SignupForm, CheckoutForm
+from store.forms import SignupForm, CheckoutForm, BookForm
 
 ''' 
 Function that can populate the whole db for testing
@@ -611,16 +611,98 @@ class IncreaseAndDecreaseCartViewsTest(TestCase):
         response = self.client.post('/increase_cart_quantity/1', {'id': 1})
         self.assertEqual(Cart.objects.get(listingID=1).quantity,1)
 
+class SellerDashboardViewTest(TestCase):
+    def setUp(self):
+        populateDB()
+
+    def test_view_url_exists_at_desired_location(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/seller/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/seller/')
+        self.assertTemplateUsed(response, 'seller_dashboard.html')
+
+    def test_correct_user_type_displayed(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/seller/')
+        self.assertEqual(response.context['user_type'], 'Seller')
+
+    def test_number_of_listings(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/books/200/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['listing_list']), 2)
+
+class AddBookViewTest(TestCase):
+    def setUp(self):
+        populateDB()
+
+    def test_view_adds_book_amount(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        data = {
+            "title":"Huckleberry Finn",
+            "author":"Mark Twain",
+            "isbn":"7364590382738",
+            "pages":"362",
+            "rating":"4.5"
+            }
+        form = BookForm(data)
+        response = self.client.post('/seller/add_book', data)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(len(Book.objects.all()), 3)
+
+    def test_view_adds_book_value(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        data = {
+            "title":"Huckleberry Finn",
+            "author":"Mark Twain",
+            "isbn":"7364590382738",
+            "pages":"362",
+            "rating":"4.5"
+            }
+        form = BookForm(data)
+        response = self.client.post('/seller/add_book', data)
+        self.assertEqual(response.status_code, 302)
+
+
+
+
+class SellerListingViewTest(TestCase):
+    def setUp(self):
+       populateDB()
+
+    def test_view_url_redirects(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/seller/listings/1')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_directs_to_correct_template(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/seller/listings/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'seller_listing.html')
+
+    def test_view_contains_correct_book(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/seller/listings/1')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['listing'], Listing.objects.filter(id='1')[0])
+
+    def test_view_directs_to_null_template_for_wrong_url(self):
+        login = self.client.login(username='testseller1', password='group4se')
+        response = self.client.get('/seller/listings/4')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'null_book.html')
+
 
 '''
 Features for next sprint so don't need to be tested now:
 
 
-@login_required
-def seller_dashboard(request):
 
-@login_required
-def seller_listing(request, id):
 
 @login_required
 def add_listing(request, isbn=''):
